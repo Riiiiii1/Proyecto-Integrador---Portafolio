@@ -1,3 +1,9 @@
-<app-navbar />
-<router-outlet />
-<app-footer />
+<div class="flex flex-col min-h-screen w-full bg-[#080d11]">
+  <app-navbar></app-navbar>
+  
+  <main class="flex-1 flex flex-col w-full h-full">
+    <router-outlet></router-outlet>
+  </main>
+
+  <app-footer></app-footer>
+</div>

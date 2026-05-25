@@ -1,1 +1,86 @@
-<p>nueva-solicitud-page works!</p>
+<div class="w-full min-h-[calc(100vh-140px)] flex flex-col items-center justify-center px-4 py-12 bg-[#080d11]">
+    <section class="w-full max-w-lg space-y-8">
+        
+        <header class="space-y-3 text-center">
+            <p class="text-sm font-semibold uppercase tracking-[0.3em] text-cyan-400">Propuesta</p>
+            <h1 class="text-3xl font-bold tracking-tight text-white md:text-4xl">
+                Nueva Solicitud
+            </h1>
+            <p class="leading-7 text-white/50">
+                Cuéntanos tu idea para empezar a trabajar en un desarrollo escalable.
+            </p>
+        </header>
+
+        <form [formGroup]="form" (ngSubmit)="onSubmit()" 
+              class="space-y-5 bg-white/5 p-8 rounded-2xl border border-white/10 backdrop-blur-sm shadow-xl">
+
+            <div class="space-y-2 text-left">
+                <label for="nombreSolicitante" class="block text-sm font-semibold text-white/90">Tu Nombre</label>
+                <input id="nombreSolicitante" type="text"
+                    class="w-full rounded-lg border border-white/10 bg-[#0a0f14] px-4 py-3 text-white placeholder-white/20 focus:border-cyan-400 focus:ring-1 focus:ring-cyan-400 outline-none transition-all"
+                    placeholder="Ej. Juan Pérez" formControlName="nombreSolicitante">
+
+                @if(nombreSolicitante.touched && nombreSolicitante.hasError('required')){
+                    <p class="text-xs text-red-400 mt-1">El nombre es requerido</p>
+                }
+            </div>
+
+            <div class="space-y-2 text-left">
+                <label for="correoSolicitante" class="block text-sm font-semibold text-white/90">Correo de Contacto</label>
+                <input id="correoSolicitante" type="email"
+                    class="w-full rounded-lg border border-white/10 bg-[#0a0f14] px-4 py-3 text-white placeholder-white/20 focus:border-cyan-400 focus:ring-1 focus:ring-cyan-400 outline-none transition-all"
+                    placeholder="juan@ejemplo.com" formControlName="correoSolicitante">
+
+                @if(correoSolicitante.touched && correoSolicitante.hasError('required')){
+                    <p class="text-xs text-red-400 mt-1">El correo es requerido</p>
+                }
+                @if(correoSolicitante.touched && correoSolicitante.hasError('email')){
+                    <p class="text-xs text-red-400 mt-1">El correo ingresado es inválido</p>
+                }
+            </div>
+
+            <div class="space-y-2 text-left">
+                <label for="programadorSlug" class="block text-sm font-semibold text-white/90">Asignar Desarrollador</label>
+                <div class="relative">
+                    <select id="programadorSlug" 
+                            class="w-full rounded-lg border border-white/10 bg-[#0a0f14] px-4 py-3 text-white focus:border-cyan-400 focus:ring-1 focus:ring-cyan-400 outline-none transition-all cursor-pointer appearance-none"
+                            formControlName="programadorSlug">
+                        <option value="" disabled selected hidden>Selecciona un miembro del equipo</option>
+                        @for (dev of strapi.programadores(); track dev.id) {
+                            <option [value]="dev.slug" class="bg-[#0a0f14] text-white">{{ dev.nombre }}</option>
+                        }
+                    </select>
+                    <div class="absolute inset-y-0 right-0 flex items-center pr-4 pointer-events-none text-white/30">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-4 h-4">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5" />
+                        </svg>
+                    </div>
+                </div>
+
+                @if(programadorSlug.touched && programadorSlug.hasError('required')){
+                    <p class="text-xs text-red-400 mt-1">Debes seleccionar un desarrollador para la propuesta</p>
+                }
+            </div>
+
+            <div class="space-y-2 text-left">
+                <label for="idea" class="block text-sm font-semibold text-white/90">Descripción de la idea</label>
+                <textarea id="idea" rows="4"
+                    class="w-full rounded-lg border border-white/10 bg-[#0a0f14] px-4 py-3 text-white placeholder-white/20 focus:border-cyan-400 focus:ring-1 focus:ring-cyan-400 outline-none transition-all resize-none"
+                    placeholder="Detalla las características funcionales o arquitectónicas del proyecto..." formControlName="idea"></textarea>
+
+                @if(idea.touched && idea.hasError('required')){
+                    <p class="text-xs text-red-400 mt-1">La descripción del proyecto es requerida</p>
+                }
+                @if(idea.touched && idea.hasError('minlength')){
+                    <p class="text-xs text-red-400 mt-1">La descripción debe tener al menos 10 caracteres</p>
+                }
+            </div>
+
+            <button type="submit" [disabled]="form.invalid"
+                class="mt-4 w-full rounded-lg bg-cyan-400 px-4 py-3 font-bold tracking-widest uppercase text-[#080d11] transition-all hover:bg-cyan-300 hover:shadow-[0_0_20px_rgba(34,211,238,0.3)] disabled:bg-white/5 disabled:text-white/30 disabled:shadow-none disabled:cursor-not-allowed">
+                Enviar Propuesta
+            </button>
+
+        </form>
+    </section>
+</div>
