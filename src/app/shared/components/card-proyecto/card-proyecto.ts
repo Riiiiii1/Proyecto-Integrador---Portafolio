@@ -1,4 +1,6 @@
-import { Component } from '@angular/core';
+import { Component,input } from '@angular/core';
+import { Proyecto } from '../../../core/models/proyecto';
+import { Programador } from '../../../core/models/programador';
 
 @Component({
   selector: 'app-card-proyecto',
@@ -7,5 +9,10 @@ import { Component } from '@angular/core';
   styles: ``,
 })
 export class CardProyecto {
+   proyecto = input.required<Proyecto>();
+  programadores = input.required<Programador[]>();
 
+  getProgramadores() {
+    return this.programadores();
+  }
 }

@@ -1,1 +1,58 @@
-<p>proyectos-page works!</p>
+
+<div class="px-8 md:px-16 pt-8 bg-[#080d11]">
+  <button onclick="history.back()"
+    style="background:transparent;border:1px solid rgba(255,255,255,0.1);color:rgba(255,255,255,0.5);font-size:12px;font-family:monospace;letter-spacing:0.1em;text-transform:uppercase;padding:8px 16px;border-radius:6px;cursor:pointer;display:flex;align-items:center;gap:8px;">
+    ← Volver
+  </button>
+</div>
+
+<main class="min-h-screen bg-[#080d11] px-8 md:px-16 py-16">
+
+
+  <section class="mb-16">
+    <p class="text-cyan-400 text-xs font-mono tracking-widest uppercase mb-4">
+      Our Work
+    </p>
+    <h1 class="text-5xl font-black text-white mb-4">Proyectos.</h1>
+    <p class="text-white/50 max-w-xl">
+      Todos los proyectos desarrollados por el equipo, desde académicos hasta simulados.
+    </p>
+  </section>
+
+ 
+  <section class="mb-12">
+    <div class="flex flex-wrap gap-3">
+      @for (filtro of filtros; track filtro) {
+        <button
+          (click)="setFiltro(filtro)"
+          [style]="filtroActivo() === filtro
+            ? 'background:#22d3ee;color:#0a0f14;font-size:12px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;padding:8px 20px;border-radius:6px;border:none;cursor:pointer;'
+            : 'background:transparent;color:rgba(255,255,255,0.4);font-size:12px;font-weight:500;letter-spacing:0.08em;text-transform:uppercase;padding:8px 20px;border-radius:6px;border:1px solid rgba(255,255,255,0.1);cursor:pointer;'">
+          {{ filtro }}
+        </button>
+      }
+    </div>
+  </section>
+
+
+  <section>
+    @if (strapi.cargando()) {
+      <div class="flex items-center justify-center py-24">
+        <p class="text-white/30 font-mono tracking-widest">Cargando proyectos...</p>
+      </div>
+    } @else if (proyectosFiltrados().length === 0) {
+      <div class="flex items-center justify-center py-24">
+        <p class="text-white/30 font-mono tracking-widest">No hay proyectos en esta categoría.</p>
+      </div>
+    } @else {
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        @for (proyecto of proyectosFiltrados(); track proyecto.id) {
+          <app-card-proyecto
+            [proyecto]="proyecto"
+            [programadores]="strapi.programadores()" />
+        }
+      </div>
+    }
+  </section>
+
+</main>

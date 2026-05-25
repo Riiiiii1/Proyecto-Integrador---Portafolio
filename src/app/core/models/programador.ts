@@ -10,4 +10,5 @@ export interface Programador {
   linkedin: string;
   slug: string;              // para la ruta /perfil/:slug
   activo: boolean;
+  stack: string[];             
 }

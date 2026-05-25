@@ -1,1 +1,98 @@
-<p>perfil-page works!</p>
+
+<main class="min-h-screen bg-[#080d11] px-8 md:px-16 py-16">
+
+  @if (programador()) {
+
+    <section class="flex flex-col md:flex-row items-start gap-10 mb-20 border-b border-white/5 pb-20">
+
+      <img [src]="programador()!.fotoPerfil"
+           [alt]="programador()!.nombre"
+           class="w-36 h-36 rounded-full object-cover border-2 border-cyan-500/40"/>
+
+      <div class="flex flex-col gap-4 flex-1">
+
+        <div>
+          <p class="text-cyan-400 text-xs font-mono tracking-widest uppercase mb-2">
+            {{ programador()!.especialidad }}
+          </p>
+          <h1 class="text-5xl font-black text-white">
+            {{ programador()!.nombre }}
+          </h1>
+        </div>
+
+        <p class="text-white/50 leading-relaxed max-w-2xl">
+          {{ programador()!.descripcionCompleta }}
+        </p>
+
+        <div class="flex items-center gap-4 mt-2">
+          <a [href]="programador()!.github" target="_blank"
+             class="text-white/40 hover:text-cyan-400 text-xs font-mono tracking-widest uppercase transition-colors">
+            GitHub →
+          </a>
+          <a [href]="programador()!.linkedin" target="_blank"
+             class="text-white/40 hover:text-cyan-400 text-xs font-mono tracking-widest uppercase transition-colors">
+            LinkedIn →
+          </a>
+          <a [href]="'mailto:' + programador()!.correo"
+             class="text-white/40 hover:text-cyan-400 text-xs font-mono tracking-widest uppercase transition-colors">
+            Email →
+          </a>
+        </div>
+
+        <!-- Botón contactar -->
+        <div class="mt-4">
+          <a routerLink="/solicitudes/nueva"
+             style="background:#22d3ee;color:#0a0f14;font-size:12px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;padding:10px 24px;border-radius:6px;text-decoration:none;display:inline-block;">
+            Contactar →
+          </a>
+        </div>
+
+      </div>
+
+    </section>
+
+
+    <section class="mb-20">
+      <p class="text-cyan-400 text-xs font-mono tracking-widest uppercase mb-4">
+        Tech Stack
+      </p>
+      <h2 class="text-3xl font-black text-white mb-10">Tecnologías.</h2>
+
+      <div class="flex flex-wrap gap-4">
+        @for (tech of programador()!.stack; track tech) {
+          <div class="flex items-center gap-3 border border-white/10 bg-white/5 rounded-lg px-4 py-3 hover:border-cyan-500/40 transition-all">
+            @if (getIcono(tech)) {
+              <img [src]="getIcono(tech)" [alt]="tech" class="w-6 h-6"/>
+            }
+            <span class="text-white/70 text-sm font-mono">{{ tech }}</span>
+          </div>
+        }
+      </div>
+    </section>
+
+    <section>
+      <p class="text-cyan-400 text-xs font-mono tracking-widest uppercase mb-4">
+        Work
+      </p>
+      <h2 class="text-3xl font-black text-white mb-10">Proyectos.</h2>
+
+      @if (proyectos().length === 0) {
+        <p class="text-white/30 font-mono">No hay proyectos aún.</p>
+      } @else {
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          @for (proyecto of proyectos(); track proyecto.id) {
+            <app-card-proyecto
+              [proyecto]="proyecto"
+              [programadores]="strapi.programadores()" />
+          }
+        </div>
+      }
+    </section>
+
+  } @else {
+    <div class="flex items-center justify-center min-h-screen">
+      <p class="text-white/30 font-mono">Programador no encontrado.</p>
+    </div>
+  }
+
+</main>

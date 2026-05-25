@@ -8,22 +8,25 @@ import { environment } from '../../../../environments/environment';
 // hecho por el GEMINI (ESTOS DATOS DEBES CONSUMIR DESDE STRAPI CARLOS)
 const MOCK_PROGRAMADORES: Programador[] = [
   {
-    id: 1, slug: 'tu-nombre',
-    nombre: 'Tu Nombre', especialidad: 'Frontend Developer',
-    descripcionBreve: 'Apasionado del frontend y la experiencia de usuario.',
-    descripcionCompleta: 'Descripción larga aquí...',
-    fotoPerfil: 'https://i.pravatar.cc/300?img=1',
-    correo: 'tu@email.com', github: 'https://github.com/tuuser',
-    linkedin: 'https://linkedin.com/in/tuuser', activo: true
+    id: 1, slug: 'david-sisa',
+    nombre: 'David Sisa Buestan', especialidad: 'Full Stack Developer',
+    descripcionBreve: 'Desarrollador apasionado por crear soluciones web completas.',
+    descripcionCompleta: 'bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla',
+    fotoPerfil: '',
+    correo: 'desbskull@email.com', github: 'https://github.com/riiiiii1',
+    linkedin: 'https://linkedin.com/in/david-esteban-sisa', activo: true,
+    stack: ['Angular', 'Node', 'Firebase']
   },
   {
-    id: 2, slug: 'compañero-nombre',
-    nombre: 'Nombre Compañero', especialidad: 'Backend Developer',
+    // AQUI TIENES QUE INVENTATE LOS DATOS, NO SE QUE DIRIA EL INGENIERO PABLO CON QUE DATOS LLENAMOS.
+    id: 2, slug: 'carlos-gordillo',
+    nombre: 'EDITA EL ARCHIVO STRAPI.TS PARA CAMBIAR TUS DATOS CARLOS', especialidad: 'Backend Developer',
     descripcionBreve: 'Especialista en APIs y bases de datos.',
     descripcionCompleta: 'Descripción larga aquí...',
-    fotoPerfil: 'https://i.pravatar.cc/300?img=2',
+    fotoPerfil: '',
     correo: 'compañero@email.com', github: 'https://github.com/compañero',
-    linkedin: 'https://linkedin.com/in/compañero', activo: true
+    linkedin: 'https://linkedin.com/in/compañero', activo: true,
+    stack: ['Node', 'Express', 'PostgreSQL']
   }
 ];
 
@@ -67,7 +70,7 @@ const MOCK_SERVICIOS: Servicio[] = [
 ];
 
 // Veras cambias el USE_MOCK a false para consumir de strapi, pero mientras lo dejas en true para seguir desarrollando con datos mockeados sin depender del backend 
-const USE_MOCK = true;  
+const DATOS = true;  
 
 @Injectable({ providedIn: 'root' })
 export class StrapiService {
@@ -99,7 +102,7 @@ export class StrapiService {
   // Esta madre es la función asincrona llamada por homepage para cargar todo desde strapi o usar los mocks
   async cargarTodo(): Promise<void> {
     this.cargando.set(true);
-    if (USE_MOCK) {
+    if (DATOS) {
   // Simula una carga asincrona con un timeout, pero toma los datos de los arrays mockeados
       await new Promise(r => setTimeout(r, 300));
       this.programadores.set(MOCK_PROGRAMADORES);
