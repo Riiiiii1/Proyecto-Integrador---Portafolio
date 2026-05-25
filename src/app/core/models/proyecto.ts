@@ -10,7 +10,7 @@ export interface Proyecto {
   repositorio: string;
   demo: string;
   destacado: boolean;
-  programadores: number[];    // ids de programadores
+  programadores: number[];   
 }
 
 

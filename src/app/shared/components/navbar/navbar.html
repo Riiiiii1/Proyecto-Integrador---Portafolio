@@ -1,21 +1,69 @@
-<nav class="flex items-center justify-between px-8 h-16 border-b border-white/5 bg-[#0d0d14]">
+<nav class="flex items-center justify-between px-8 h-16 border-b border-cyan-500/20 bg-[#080d11]">
 
   <span class="font-mono text-sm font-medium tracking-widest text-white">
-    DUO_DEV
+    DUO_DEV<span class="text-cyan-400">.</span>
   </span>
-    
-<ul class="hidden md:flex items-center gap-8 list-none">
-  <li><a routerLink="/" routerLinkActive="active-link" class="nav-link">Home</a></li>
-  <li><a routerLink="/proyectos" routerLinkActive="active-link" class="nav-link">Proyectos</a></li>
-  <li><a routerLink="/login" routerLinkActive="active-link" class="nav-link">Login</a></li>
-  <li><a routerLink="/solicitudes/mis" routerLinkActive="active-link" class="nav-link">Solicitudes</a></li>
-</ul>
+
+  <ul class="hidden md:flex items-center gap-8 list-none">
+    <li>
+      <a routerLink="/" routerLinkActive="active-link"
+         [routerLinkActiveOptions]="{exact: true}"
+         class="nav-link text-white/70 hover:text-cyan-400 transition-colors">
+         Home
+      </a>
+    </li>
+    <li>
+      <a routerLink="/proyectos" routerLinkActive="active-link"
+         class="nav-link text-white/70 hover:text-cyan-400 transition-colors">
+         Proyectos
+      </a>
+    </li>
+
+    @if (!auth.isLoggedIn()) {
+      <li>
+        <a routerLink="/login" routerLinkActive="active-link"
+           class="nav-link text-white/70 hover:text-cyan-400 transition-colors">
+           Login
+        </a>
+      </li>
+    }
+
+    @if (auth.isLoggedIn()) {
+      <li>
+        <a routerLink="/solicitudes/mis" routerLinkActive="active-link"
+           class="nav-link text-white/70 hover:text-cyan-400 transition-colors">
+           Solicitudes
+        </a>
+      </li>
+    }
+
+    @if (auth.isProgramador()) {
+      <li>
+        <a routerLink="/panel" routerLinkActive="active-link"
+           class="nav-link text-white/70 hover:text-cyan-400 transition-colors">
+           Panel
+        </a>
+      </li>
+    }
+
+  </ul>
+
   <div class="flex items-center gap-3">
 
-    <a routerLink="/solicitudes/nueva"
-       class="bg-violet-700 hover:bg-violet-600 text-white text-xs font-medium tracking-widest uppercase px-5 py-2 rounded transition-colors">
-      Conectar
-    </a>
+    @if (!auth.isLoggedIn()) {
+      <a routerLink="/solicitudes/nueva"
+         class="bg-cyan-400 text-slate-950 text-xs font-bold tracking-widest uppercase px-5 py-2 rounded transition-all cursor-pointer">
+        Conectar
+      </a>
+    }
+
+    @if (auth.isLoggedIn()) {
+      <button (click)="auth.logout()"
+         style="background:rgba(239,68,68,0.15);color:#f87171;border:1px solid rgba(239,68,68,0.3);font-size:12px;font-weight:600;letter-spacing:0.1em;text-transform:uppercase;padding:8px 20px;border-radius:6px;cursor:pointer;transition:all 0.2s;">
+        Logout
+      </button>
+    }
+
   </div>
 
 </nav>
