@@ -1,1 +1,78 @@
-<p>register-page works!</p>
+<main class="min-h-screen bg-[#080d11] flex flex-col items-center justify-center px-4 py-12">
+    <section class="w-full max-w-md space-y-8">
+        
+        <header class="space-y-3 text-center">
+            <p class="text-sm font-semibold uppercase tracking-[0.3em] text-cyan-400">Sign Up</p>
+            <h1 class="text-3xl font-bold tracking-tight text-white md:text-4xl">
+                Crear cuenta
+            </h1>
+            <p class="leading-7 text-white/50">
+                Ingresa tus datos para registrarte en la plataforma.
+            </p>
+        </header>
+
+        <form [formGroup]="form" (ngSubmit)="onSubmit()" 
+              class="space-y-5 bg-white/5 p-8 rounded-2xl border border-white/10 backdrop-blur-sm shadow-xl">
+
+            <div class="space-y-2">
+                <label for="email" class="block text-sm font-semibold text-white/90">Email</label>
+                <input id="email" type="email"
+                    class="w-full rounded-lg border border-white/10 bg-[#0a0f14] px-4 py-3 text-white placeholder-white/20 focus:border-cyan-400 focus:ring-1 focus:ring-cyan-400 outline-none transition-all"
+                    placeholder="micorreo@email.com" formControlName="email">
+
+                @if(email.touched && email.hasError('required')){
+                    <p class="text-xs text-red-400 mt-1">El email es requerido</p>
+                }
+                @if(email.touched && email.hasError('email')){
+                    <p class="text-xs text-red-400 mt-1">El email es inválido</p>
+                }
+                @if (email.status === 'PENDING') {
+                    <p class="text-xs text-cyan-400 mt-1">Verificando disponibilidad...</p>
+                }
+                @if (email.touched && email.hasError('emailTaken')) {
+                    <p class="text-xs text-red-400 mt-1">Este email ya está registrado</p>
+                }
+            </div>
+
+            <div class="space-y-2">
+                <label for="password" class="block text-sm font-semibold text-white/90">Contraseña</label>
+                <input id="password" type="password"
+                    class="w-full rounded-lg border border-white/10 bg-[#0a0f14] px-4 py-3 text-white placeholder-white/20 focus:border-cyan-400 focus:ring-1 focus:ring-cyan-400 outline-none transition-all"
+                    placeholder="••••••••" formControlName="password">
+
+                @if(password.touched && password.hasError('required')){
+                    <p class="text-xs text-red-400 mt-1">La contraseña es requerida</p>
+                }
+                @if(password.touched && password.hasError('minlength')){
+                    <p class="text-xs text-red-400 mt-1">Debe tener al menos 8 caracteres</p>
+                }
+            </div>
+
+            <div class="space-y-2">
+                <label for="confirmPassword" class="block text-sm font-semibold text-white/90">Confirmar Contraseña</label>
+                <input id="confirmPassword" type="password"
+                    class="w-full rounded-lg border border-white/10 bg-[#0a0f14] px-4 py-3 text-white placeholder-white/20 focus:border-cyan-400 focus:ring-1 focus:ring-cyan-400 outline-none transition-all"
+                    placeholder="••••••••" formControlName="confirmPassword">
+
+                @if (form.hasError('passwordMismatch') && confirmPassword.touched) {
+                    <p class="text-xs text-red-400 mt-1">Las contraseñas no coinciden</p>
+                }
+            </div>
+
+            <button type="submit" [disabled]="form.invalid || form.status === 'PENDING'"
+                class="mt-2 w-full rounded-lg bg-cyan-400 px-4 py-3 font-bold tracking-widest uppercase text-[#080d11] transition-all hover:bg-cyan-300 hover:shadow-[0_0_20px_rgba(34,211,238,0.3)] disabled:bg-white/5 disabled:text-white/30 disabled:shadow-none disabled:cursor-not-allowed">
+                Crear cuenta
+            </button>
+
+            <div class="pt-4 text-center border-t border-white/10 mt-6">
+                <p class="text-sm text-white/50 mt-4">
+                    ¿Ya tienes una cuenta? 
+                    <a routerLink="/login" class="text-cyan-400 hover:text-white transition-colors font-medium">
+                        Inicia sesión aquí
+                    </a>
+                </p>
+            </div>
+
+        </form>
+    </section>
+</main>
