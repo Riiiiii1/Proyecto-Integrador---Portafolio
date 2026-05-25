@@ -1,12 +1,12 @@
-import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core'; // <-- Añadir signal
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
-import { Router } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 import { passwordMatchValidator } from '../../validators/password-match.validator';
 import { emailUniqueValidator } from '../../validators/email-unique.validator';
 
 @Component({
   selector: 'app-register-page',
-  imports: [ReactiveFormsModule],
+  imports: [ReactiveFormsModule, RouterLink],
   templateUrl: './register-page.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
@@ -14,6 +14,10 @@ export class RegisterPage {
   
   private fb = inject(FormBuilder);
   private router = inject(Router);
+
+  // Variables de estado para los botones del ojito
+  showPassword = signal(false);
+  showConfirmPassword = signal(false);
 
   form = this.fb.group({
     email: ['', [Validators.required, Validators.email], [emailUniqueValidator()]],
@@ -24,6 +28,15 @@ export class RegisterPage {
   get email() { return this.form.get('email')!; }
   get password() { return this.form.get('password')!; }
   get confirmPassword() { return this.form.get('confirmPassword')!; }
+
+  // Funciones para alternar la vista
+  togglePassword() {
+    this.showPassword.set(!this.showPassword());
+  }
+
+  toggleConfirmPassword() {
+    this.showConfirmPassword.set(!this.showConfirmPassword());
+  }
 
   onSubmit() {
     if (this.form.invalid) {
