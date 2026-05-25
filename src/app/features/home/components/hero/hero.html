@@ -1,34 +1,31 @@
-<section class="relative min-h-screen flex items-center bg-[#080d11] overflow-hidden">
+<section class="relative w-full min-h-[calc(100vh-64px)] flex flex-col items-center justify-center bg-[#080d11] overflow-hidden">
 
-  <div class="absolute top-[-10%] left-[-10%] w-[50%] h-[80%] bg-cyan-400/20 blur-[120px] rounded-full pointer-events-none"></div>
-
+  <div class="absolute top-0 left-[50%] translate-x-[-50%] w-[50%] h-[80%] bg-cyan-400/20 blur-[120px] rounded-full pointer-events-none"></div>
   <div class="absolute top-0 left-0 right-0 h-px bg-cyan-500/20"></div>
 
-  <div class="relative z-10 px-8 md:px-16 max-w-3xl">
+  <div class="relative z-10 px-8 md:px-16 w-full max-w-4xl mx-auto flex flex-col items-center text-center">
 
     <p class="text-white/40 text-xs font-mono tracking-widest uppercase mb-6">
       Desarrollo Full-Stack 
     </p>
 
     <h1 class="text-5xl md:text-7xl font-black text-white leading-tight mb-4">
-      Contruyendo un futuro digital <br>
+      Construyendo un futuro digital <br>
       <span class="text-cyan-400">Juntos.</span>
     </h1>
 
-    <p class="text-white/50 text-base md:text-lg leading-relaxed mb-10 max-w-lg">
-        Somos una vrga.
+    <p class="text-white/50 text-base md:text-lg leading-relaxed mb-10 max-w-lg mx-auto">
+      Transformando ideas complejas en interfaces limpias y sistemas backend robustos con un alto enfoque en rendimiento y escalabilidad.
     </p>
 
-    <div class="flex items-center gap-4 flex-wrap">
+    <div class="flex items-center justify-center gap-4 flex-wrap">
       <a routerLink="/solicitudes/nueva"
-         class="bg-cyan-400 text-slate-950 shadow-[0_0_20px_rgba(34,211,238,0.4)] hover:shadow-[0_0_30px_rgba(34,211,238,0.6)] transition-all cursor-pointer"
-         style="font-size:12px;font-weight:800;letter-spacing:0.1em;text-transform:uppercase;padding:12px 28px;border-radius:6px;text-decoration:none;">
+         class="bg-cyan-400 text-slate-950 shadow-[0_0_20px_rgba(34,211,238,0.4)] hover:shadow-[0_0_30px_rgba(34,211,238,0.6)] transition-all cursor-pointer text-xs font-bold tracking-widest uppercase px-8 py-3 rounded-md">
         Iniciar Proyecto 
       </a>
       
       <a routerLink="/proyectos"
-         class="hover:bg-white/5 transition-colors cursor-pointer"
-         style="border:1px solid rgba(255,255,255,0.2);color:#fff;font-size:12px;font-weight:500;letter-spacing:0.1em;text-transform:uppercase;padding:12px 28px;border-radius:6px;text-decoration:none;display:inline-flex;align-items:center;gap:8px;">
+         class="border border-white/20 text-white hover:bg-white/5 transition-colors cursor-pointer text-xs font-medium tracking-widest uppercase px-8 py-3 rounded-md flex items-center gap-2">
         Mirar Stack →
       </a>
     </div>

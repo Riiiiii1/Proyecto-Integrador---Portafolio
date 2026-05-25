@@ -8,6 +8,7 @@ import { environment } from '../../../../environments/environment';
 // hecho por el GEMINI (ESTOS DATOS DEBES CONSUMIR DESDE STRAPI CARLOS)
 const MOCK_PROGRAMADORES: Programador[] = [
   {
+    // DATOS DE DAVID 
     id: 1, slug: 'david-sisa',
     nombre: 'David Sisa Buestan', especialidad: 'Full Stack Developer',
     descripcionBreve: 'Desarrollador apasionado por crear soluciones web completas.',
@@ -18,15 +19,17 @@ const MOCK_PROGRAMADORES: Programador[] = [
     stack: ['Angular', 'Node', 'Firebase']
   },
   {
-    // AQUI TIENES QUE INVENTATE LOS DATOS, NO SE QUE DIRIA EL INGENIERO PABLO CON QUE DATOS LLENAMOS.
+    // DATOS DE CARLOS
     id: 2, slug: 'carlos-gordillo',
-    nombre: 'EDITA EL ARCHIVO STRAPI.TS PARA CAMBIAR TUS DATOS CARLOS', especialidad: 'Backend Developer',
-    descripcionBreve: 'Especialista en APIs y bases de datos.',
-    descripcionCompleta: 'Descripción larga aquí...',
-    fotoPerfil: '',
-    correo: 'compañero@email.com', github: 'https://github.com/compañero',
-    linkedin: 'https://linkedin.com/in/compañero', activo: true,
-    stack: ['Node', 'Express', 'PostgreSQL']
+    nombre: 'Carlos Gordillo', especialidad: 'Full Stack Developer',
+    descripcionBreve: 'Estudiante de Ingeniería en Computación. Especialista en seguridad backend, optimización de bases de datos y diseño de interfaces limpias.',
+    descripcionCompleta: 'Soy estudiante de quinto ciclo de Ingeniería en Computación con un fuerte enfoque en el rendimiento y la escalabilidad. En mi experiencia profesional colaborando con Territorios Inteligentes, me he especializado en la reingeniería de sistemas: desde el rediseño minimalista y centrado en la UX del Portal Ciudadano usando Angular, hasta la robustez del backend. He implementado capas de seguridad estrictas en servicios REST y SOAP, manejo automático de recursos, validación de tokens y optimización de consultas SQL para sistemas de recaudación y trámites.',
+    fotoPerfil: '', 
+    correo: 'antoniogordillo.1808@gmail.com', 
+    github: 'https://github.com/antonikr8s', 
+    linkedin: 'https://www.linkedin.com/in/carlos-antonio-gordillo-tenemaza-828540281', 
+    activo: true,
+    stack: ['Angular', 'Java', 'Node', 'PostgreSQL']
   }
 ];
 
@@ -38,7 +41,7 @@ const MOCK_PROYECTOS: Proyecto[] = [
     imagen: 'https://picsum.photos/seed/p1/600/400',
     tipo: 'academico', tecnologias: ['Angular', 'Node', 'Firebase'],
     repositorio: 'https://github.com', demo: 'https://demo.com',
-    destacado: true, programadores: [1, 2]
+    destacado: true, programadores: [1, 2] // Aquí participan ambos
   },
   {
     id: 2, slug: 'proyecto-dos', nombre: 'Proyecto Dos',
@@ -47,16 +50,18 @@ const MOCK_PROYECTOS: Proyecto[] = [
     imagen: 'https://picsum.photos/seed/p2/600/400',
     tipo: 'personal', tecnologias: ['Angular', 'Chart.js'],
     repositorio: 'https://github.com', demo: '',
-    destacado: true, programadores: [1]
+    destacado: true, programadores: [1] // Solo David
   },
   {
-    id: 3, slug: 'proyecto-tres', nombre: 'Proyecto Tres',
-    descripcionBreve: 'API REST con autenticación JWT.',
-    descripcionCompleta: 'Descripción detallada...',
-    imagen: 'https://picsum.photos/seed/p3/600/400',
-    tipo: 'laboral', tecnologias: ['Node', 'Express', 'PostgreSQL'],
-    repositorio: 'https://github.com', demo: '',
-    destacado: false, programadores: [2]
+    //TERRITORIOS INTELIGENTES
+    id: 3, slug: 'portal-ciudadano', nombre: 'Portal Ciudadano & Banca Core',
+    descripcionBreve: 'Rediseño UX/UI e implementación de seguridad en servicios REST/SOAP.',
+    descripcionCompleta: 'Proyecto de modernización para Territorios Inteligentes. En el Frontend, rediseñé la interfaz del portal de trámites aplicando estandarización de componentes (Cards), validaciones reactivas en tiempo real y nuevos sistemas de CAPTCHA visual. En el Backend, reestructuré la lógica de servicios bancarios (REST/SOAP) implementando cierres automáticos de conexión (try-with-resources), validación de accesos por token, control de transacciones (rollback) y optimización de filtros directamente en SQL.',
+    imagen: 'https://picsum.photos/seed/carlos1/600/400', 
+    tipo: 'laboral', tecnologias: ['Angular', 'Java', 'SQL', 'SOAP/REST'],
+    repositorio: '', 
+    demo: '',
+    destacado: true, programadores: [2] // Solo Carlos
   }
 ];
 

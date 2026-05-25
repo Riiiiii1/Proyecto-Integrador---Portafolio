@@ -7,42 +7,42 @@ import { ListaSolicitudesPage } from './features/solicitudes/pages/lista-solicit
 import { PanelPage } from './features/panel/pages/panel-page/panel-page';
 import { PerfilPage } from './features/perfil/pages/perfil-page/perfil-page';
 import { ProyectosPage } from './features/proyectos/pages/proyectos-page/proyectos-page';
+
 export const routes: Routes = [
-    {   
-        path:'', 
-        component: HomePage
+    { 
+        path: '', 
+        component: HomePage 
     },
     {
-        path:'perfil/:slug',
+        path: 'perfil/:slug',
         component: PerfilPage
     },
     {
-        path:'login',
+        path: 'login',
         component: LoginPage
     },
     {
-        path:'register',
+        path: 'register',
         component: RegisterPage
     },
     {
-        path:'solicitudes/nueva',
+        path: 'solicitudes/nueva',
         component: NuevaSolicitudPage
     },
     {
-        path:'solicitudes/mis',
+        path: 'solicitudes/mis',
         component: ListaSolicitudesPage
-
     },
     {
-        path:'panel',
+        path: 'panel',
         component: PanelPage
     },
     {
-        path:'proyectos',
+        path: 'proyectos',
         component: ProyectosPage
     },
     {
-        path:'**',
-        redirectTo:''
+        path: '**',
+        redirectTo: ''
     }
 ];
