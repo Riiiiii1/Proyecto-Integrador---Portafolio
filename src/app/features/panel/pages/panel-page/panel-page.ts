@@ -4,6 +4,7 @@ import { Auth } from '../../../../core/services/auth/auth';
 import { Firestore } from '../../../../core/services/firestore/firestore';
 import { Solicitud } from '../../../../core/models/solicitud';
 import { DatePipe } from '@angular/common';
+
 @Component({
   selector: 'app-panel-page',
   standalone: true,
