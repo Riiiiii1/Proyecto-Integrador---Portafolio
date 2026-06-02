@@ -8,41 +8,26 @@ import { PanelPage } from './features/panel/pages/panel-page/panel-page';
 import { PerfilPage } from './features/perfil/pages/perfil-page/perfil-page';
 import { ProyectosPage } from './features/proyectos/pages/proyectos-page/proyectos-page';
 
+// Importamos los nuevos Guards
+import { authGuard } from './core/guards/auth.guard';
+import { guestGuard } from './core/guards/guest.guard';
+import { adminGuard } from './core/guards/admin.guard';
+
 export const routes: Routes = [
-    { 
-        path: '', 
-        component: HomePage 
-    },
-    {
-        path: 'perfil/:slug',
-        component: PerfilPage
-    },
-    {
-        path: 'login',
-        component: LoginPage
-    },
-    {
-        path: 'register',
-        component: RegisterPage
-    },
-    {
-        path: 'solicitudes/nueva',
-        component: NuevaSolicitudPage
-    },
-    {
-        path: 'solicitudes/mis',
-        component: ListaSolicitudesPage
-    },
-    {
-        path: 'panel',
-        component: PanelPage
-    },
-    {
-        path: 'proyectos',
-        component: ProyectosPage
-    },
-    {
-        path: '**',
-        redirectTo: ''
-    }
+    { path: '', component: HomePage },
+    { path: 'perfil/:slug', component: PerfilPage },
+    
+    // Rutas protegidas para que no entre si ya está logueado
+    { path: 'login', component: LoginPage, canActivate: [guestGuard] },
+    { path: 'register', component: RegisterPage, canActivate: [guestGuard] },
+    
+    // El cliente debe estar logueado para enviar una solicitud
+    { path: 'solicitudes/nueva', component: NuevaSolicitudPage, canActivate: [authGuard] },
+    { path: 'solicitudes/mis', component: ListaSolicitudesPage, canActivate: [authGuard] },
+    
+    // Solo ustedes (programadores) entran al panel
+    { path: 'panel', component: PanelPage, canActivate: [adminGuard] },
+    
+    { path: 'proyectos', component: ProyectosPage },
+    { path: '**', redirectTo: '' }
 ];
