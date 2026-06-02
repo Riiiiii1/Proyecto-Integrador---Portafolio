@@ -2,6 +2,9 @@ import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/cor
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
 
+// Importamos tu clase original Auth para interactuar con Firebase
+import { Auth } from '../../../../core/services/auth/auth';
+
 @Component({
   selector: 'app-login-page',
   imports: [ReactiveFormsModule, RouterLink],
@@ -12,6 +15,7 @@ export class LoginPage {
   
   private fb = inject(FormBuilder);
   private router = inject(Router);
+  private auth = inject(Auth); // Inyectamos tu clase de autenticación
 
   // Variable de estado para mostrar/ocultar contraseña
   showPassword = signal(false);
@@ -36,5 +40,21 @@ export class LoginPage {
     }
     console.log('Datos de inicio de sesión:', this.form.value);
     this.router.navigate(['/']);
+  }
+
+  /**
+   * Dispara el flujo de inicio de sesión con Google.
+   * Si es exitoso, redirige temporalmente al Home o al Panel según corresponda.
+   */
+  ingresarConGoogle() {
+    this.auth.loginWithGoogle()
+      .then((resultado) => {
+        console.log('Usuario conectado vía Google:', resultado.user.displayName);
+        // Redirigimos al inicio una vez autenticado correctamente
+        this.router.navigate(['/']);
+      })
+      .catch((error) => {
+        console.error('Error durante la autenticación con Google:', error);
+      });
   }
 }

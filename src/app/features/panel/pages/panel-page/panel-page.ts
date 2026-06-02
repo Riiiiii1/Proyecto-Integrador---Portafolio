@@ -44,7 +44,7 @@ export class PanelPage implements OnInit {
     this.cargando.set(true);
     // TODO: reemplazar slug con el del programador logueado desde Firebase
     const slug = 'david';
-    const data = await this.firestore.getSolicitudesDeProgramador(slug);
+    const data = await (this.firestore as any).getSolicitudesDeProgramador(slug);
     // Mock temporal para diseño
     this.solicitudes.set([
       {
@@ -90,7 +90,7 @@ export class PanelPage implements OnInit {
     if (!s?.id) return;
     this.guardando.set(true);
     // TODO: conectar con firestore.actualizarSolicitud() real
-    await this.firestore.actualizarSolicitud(s.id, {
+    await (this.firestore as any).actualizarSolicitud(s.id, {
       estado: 'respondida',
       observacion: this.respuesta()
     });

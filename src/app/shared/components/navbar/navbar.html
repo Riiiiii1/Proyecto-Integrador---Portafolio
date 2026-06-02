@@ -27,7 +27,7 @@
         </a>
       </li>
     }
-
+    <!-- REGISTRO PARA CLIENTES-->
     @if (auth.isLoggedIn()) {
       <li>
         <a routerLink="/solicitudes/mis" routerLinkActive="active-link"
@@ -36,7 +36,7 @@
         </a>
       </li>
     }
-
+<!-- REGISTRO PARA PROGRAMADORs-->
     @if (auth.isProgramador()) {
       <li>
         <a routerLink="/panel" routerLinkActive="active-link"
@@ -49,7 +49,7 @@
   </ul>
 
   <div class="flex items-center gap-3">
-
+<!-- REGISTRO PARA CLIENTES-->
     @if (!auth.isLoggedIn()) {
       <a routerLink="/solicitudes/nueva"
          class="bg-cyan-400 text-slate-950 text-xs font-bold tracking-widest uppercase px-5 py-2 rounded transition-all cursor-pointer">
