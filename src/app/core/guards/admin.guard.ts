@@ -1,10 +1,21 @@
 import { inject } from '@angular/core';
 import { CanActivateFn, Router } from '@angular/router';
-import { Auth } from '../services/auth/auth';
+import { Auth as FirebaseAuth, authState } from '@angular/fire/auth';
+import { map, take } from 'rxjs';
 
-// Solo permite pasar si es programador (tú o David)
 export const adminGuard: CanActivateFn = () => {
-  const auth = inject(Auth);
+  const auth = inject(FirebaseAuth);
   const router = inject(Router);
-  return auth.isProgramador() ? true : router.createUrlTree(['/']);
+
+  return authState(auth).pipe(
+    take(1),
+    map(user => {
+      // Si no está logueado, lo manda al login
+      if (!user || !user.email) return router.createUrlTree(['/login']);
+      
+      // Si está logueado, verificamos si es programador
+      const emailsProgramadores = ['david@email.com', 'carlos@email.com', 'antoniogordillo.1808@gmail.com'];
+      return emailsProgramadores.includes(user.email) ? true : router.createUrlTree(['/']);
+    })
+  );
 };

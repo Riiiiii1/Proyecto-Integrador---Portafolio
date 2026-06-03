@@ -1,10 +1,15 @@
 import { inject } from '@angular/core';
 import { CanActivateFn, Router } from '@angular/router';
-import { Auth } from '../services/auth/auth';
+import { Auth as FirebaseAuth, authState } from '@angular/fire/auth';
+import { map, take } from 'rxjs';
 
-// Si ya hay sesión, no puede entrar a /login, lo manda al home
 export const guestGuard: CanActivateFn = () => {
-  const auth = inject(Auth);
+  const auth = inject(FirebaseAuth);
   const router = inject(Router);
-  return !auth.isLoggedIn() ? true : router.createUrlTree(['/']);
+
+  // Esperamos a Firebase. Si hay usuario, lo mandamos al Home. Si no, lo dejamos pasar al Login.
+  return authState(auth).pipe(
+    take(1),
+    map(user => (user ? router.createUrlTree(['/']) : true))
+  );
 };

@@ -1,10 +1,15 @@
 import { inject } from '@angular/core';
 import { CanActivateFn, Router } from '@angular/router';
-import { Auth } from '../services/auth/auth';
+import { Auth as FirebaseAuth, authState } from '@angular/fire/auth';
+import { map, take } from 'rxjs';
 
-// Si no hay sesión, rebota al login
 export const authGuard: CanActivateFn = () => {
-  const auth = inject(Auth);
+  const auth = inject(FirebaseAuth);
   const router = inject(Router);
-  return auth.isLoggedIn() ? true : router.createUrlTree(['/login']);
+
+  // Si hay sesión válida, permite pasar. Si no, lo manda al login.
+  return authState(auth).pipe(
+    take(1),
+    map(user => (user ? true : router.createUrlTree(['/login'])))
+  );
 };

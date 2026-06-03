@@ -6,64 +6,60 @@
 
   <ul class="hidden md:flex items-center gap-8 list-none">
     <li>
-      <a routerLink="/" routerLinkActive="active-link"
-         [routerLinkActiveOptions]="{exact: true}"
-         class="nav-link text-white/70 hover:text-cyan-400 transition-colors">
+      <a routerLink="/" routerLinkActive="active-link" [routerLinkActiveOptions]="{exact: true}" class="nav-link text-white/70 hover:text-cyan-400 transition-colors">
          Home
       </a>
     </li>
     <li>
-      <a routerLink="/proyectos" routerLinkActive="active-link"
-         class="nav-link text-white/70 hover:text-cyan-400 transition-colors">
+      <a routerLink="/proyectos" routerLinkActive="active-link" class="nav-link text-white/70 hover:text-cyan-400 transition-colors">
          Proyectos
       </a>
     </li>
 
-    @if (!auth.isLoggedIn()) {
+    @if (auth.isLoggedIn() && !auth.isProgramador()) {
       <li>
-        <a routerLink="/login" routerLinkActive="active-link"
-           class="nav-link text-white/70 hover:text-cyan-400 transition-colors">
-           Login
+        <a routerLink="/solicitudes/nueva" routerLinkActive="active-link" class="nav-link text-white/70 hover:text-cyan-400 transition-colors">
+           Nueva Solicitud
+        </a>
+      </li>
+      <li>
+        <a routerLink="/solicitudes/mis" routerLinkActive="active-link" class="nav-link text-white/70 hover:text-cyan-400 transition-colors">
+           Solicitudes Enviadas
         </a>
       </li>
     }
-    <!-- REGISTRO PARA CLIENTES-->
-    @if (auth.isLoggedIn()) {
-      <li>
-        <a routerLink="/solicitudes/mis" routerLinkActive="active-link"
-           class="nav-link text-white/70 hover:text-cyan-400 transition-colors">
-           Solicitudes
-        </a>
-      </li>
-    }
-<!-- REGISTRO PARA PROGRAMADORs-->
+
     @if (auth.isProgramador()) {
       <li>
-        <a routerLink="/panel" routerLinkActive="active-link"
-           class="nav-link text-white/70 hover:text-cyan-400 transition-colors">
-           Panel
+        <a routerLink="/panel" routerLinkActive="active-link" class="nav-link text-white/70 hover:text-cyan-400 transition-colors text-cyan-300 font-bold">
+           Mis solicitudes
         </a>
       </li>
     }
-
   </ul>
 
-  <div class="flex items-center gap-3">
-<!-- REGISTRO PARA CLIENTES-->
+  <div class="flex items-center gap-5">
+    
     @if (!auth.isLoggedIn()) {
-      <a routerLink="/solicitudes/nueva"
-         class="bg-cyan-400 text-slate-950 text-xs font-bold tracking-widest uppercase px-5 py-2 rounded transition-all cursor-pointer">
+      <a routerLink="/login" class="bg-cyan-400 text-slate-950 text-xs font-bold tracking-widest uppercase px-5 py-2 rounded transition-all cursor-pointer hover:bg-cyan-300">
         Conectar
       </a>
     }
 
     @if (auth.isLoggedIn()) {
-      <button (click)="auth.logout()"
-         style="background:rgba(239,68,68,0.15);color:#f87171;border:1px solid rgba(239,68,68,0.3);font-size:12px;font-weight:600;letter-spacing:0.1em;text-transform:uppercase;padding:8px 20px;border-radius:6px;cursor:pointer;transition:all 0.2s;">
-        Logout
-      </button>
+      <div class="flex items-center gap-5">
+        
+        <span class="text-sm font-medium text-cyan-50 hidden md:block">
+          {{ auth.currentUser()?.email }}
+        </span>
+        
+        <button (click)="auth.logout()"
+           style="background:rgba(239,68,68,0.15);color:#f87171;border:1px solid rgba(239,68,68,0.3);font-size:10px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;padding:6px 14px;border-radius:20px;cursor:pointer;transition:all 0.2s;">
+          Cerrar sesión
+        </button>
+        
+      </div>
     }
 
   </div>
-
 </nav>
