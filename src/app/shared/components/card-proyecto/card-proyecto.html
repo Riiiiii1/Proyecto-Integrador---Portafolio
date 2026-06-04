@@ -50,12 +50,12 @@
           GitHub →
         </a>
       }
-      @if (proyecto().demo) {
-        <a [href]="proyecto().demo" target="_blank"
-           class="text-cyan-400 hover:text-white text-xs font-mono tracking-widest uppercase transition-colors">
-          Demo →
-        </a>
-      }
+@if (proyecto().demo && proyecto().demo.trim() !== '') {
+  <a [href]="proyecto().demo" target="_blank"
+     class="text-cyan-400 hover:text-white text-xs font-mono tracking-widest uppercase transition-colors">
+    Demo →
+  </a>
+}
     </div>
 
   </div>

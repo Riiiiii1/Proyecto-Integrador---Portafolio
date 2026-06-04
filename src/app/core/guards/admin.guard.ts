@@ -14,7 +14,7 @@ export const adminGuard: CanActivateFn = () => {
       if (!user || !user.email) return router.createUrlTree(['/login']);
       
       // Si está logueado, verificamos si es programador
-      const emailsProgramadores = ['david@email.com', 'carlos@email.com', 'antoniogordillo.1808@gmail.com'];
+      const emailsProgramadores = ['sisabuestandavidesteban@gmail.com', 'carlos@email.com', 'antoniogordillo.1808@gmail.com','david.duodev@gmail.com'];
       return emailsProgramadores.includes(user.email) ? true : router.createUrlTree(['/']);
     })
   );

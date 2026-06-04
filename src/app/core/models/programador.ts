@@ -4,11 +4,11 @@ export interface Programador {
   especialidad: string;
   descripcionBreve: string;
   descripcionCompleta: string;
-  fotoPerfil: string;        // URL de imagen
+  fotoPerfil: string;       
   correo: string;
   github: string;
   linkedin: string;
-  slug: string;              // para la ruta /perfil/:slug
+  slug: string;              
   activo: boolean;
   stack: string[];             
 }

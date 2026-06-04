@@ -32,15 +32,26 @@ export class LoginPage {
   togglePassword() {
     this.showPassword.set(!this.showPassword());
   }
-
-  onSubmit() {
-    if (this.form.invalid) {
-      this.form.markAllAsTouched();
-      return;
-    }
-    console.log('Datos de inicio de sesión:', this.form.value);
-    this.router.navigate(['/']);
+onSubmit() {
+  if (this.form.invalid) {
+    this.form.markAllAsTouched();
+    return;
   }
+
+  const { email, password } = this.form.value;
+
+  this.auth.loginWithEmail(email!, password!)
+    .then(() => {
+      if (this.auth.isProgramador()) {
+        this.router.navigate(['/panel']);
+      } else {
+        this.router.navigate(['/']);
+      }
+    })
+    .catch((error) => {
+      console.error('Error al iniciar sesión:', error.code);
+    });
+}
 
   /**
    * Dispara el flujo de inicio de sesión con Google.

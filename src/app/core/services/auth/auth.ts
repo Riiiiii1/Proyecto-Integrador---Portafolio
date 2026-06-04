@@ -1,6 +1,6 @@
 import { Injectable, signal, computed, inject } from '@angular/core';
 import { Router } from '@angular/router';
-
+import { signInWithEmailAndPassword } from '@angular/fire/auth';
 // Importamos los módulos de Firebase usando un alias para evitar colisiones de nombres [cite: 11]
 import { Auth as FirebaseAuth, GoogleAuthProvider, signInWithPopup, signOut, authState } from '@angular/fire/auth';
 import { toSignal } from '@angular/core/rxjs-interop';
@@ -13,19 +13,30 @@ export class Auth {
     private firebaseAuth = inject(FirebaseAuth); // Inyectamos el servicio de Firebase [cite: 11]
 
   // Estado reactivo para el usuario actual (Conectado directamente a Firebase a través de toSignal) [cite: 7, 11]
-  currentUser = toSignal(authState(this.firebaseAuth));
+currentUser = toSignal(authState(this.firebaseAuth), { initialValue: null });
 
   // Estados computados para verificar si el usuario está logueado y si es programador [cite: 8, 11]
-  isLoggedIn = computed(() => this.currentUser() !== null && this.currentUser() !== undefined);
+ isLoggedIn = computed(() => this.currentUser() !== null);
   
-  isProgramador = computed(() => {
-    const user = this.currentUser();
-    if (!user || !user.email) return false;
-    // Verificar si el email del usuario está en la lista de programadores autorizados [cite: 9, 11]
-    // (Añadimos tu cuenta de Gmail de soporte para las pruebas de acceso al Panel)
-    const emailsProgramadores = ['david@email.com', 'carlos@email.com', 'antoniogordillo.1808@gmail.com'];
-    return emailsProgramadores.includes(user.email);
-  });
+isProgramador = computed(() => {
+  const user = this.currentUser();
+
+  // 1. PRIMERO declaras la lista de correos permitidos
+  const emailsProgramadores = [
+    'sisabuestandavidesteban@gmail.com',
+    'carlos@gmail.com',
+    'david.duodev@gmail.com',   
+    'antoniogordillo.1808@gmail.com'
+  ];
+
+  // 2. AHORA SÍ puedes usar la lista en tus impresiones de consola
+  console.log('Usuario actual:', user?.email);
+  console.log('¿Es programador?:', user?.email && emailsProgramadores.includes(user.email));
+
+  // 3. Tu validación final
+  if (!user || !user.email) return false;
+  return emailsProgramadores.includes(user.email);
+});
 
   // Si el usuario no es programador, se le redirige al home [cite: 10, 11]
   logout() {
@@ -51,4 +62,7 @@ export class Auth {
     
     return signInWithPopup(this.firebaseAuth, provider);
   }
+  loginWithEmail(email: string, password: string) {
+  return signInWithEmailAndPassword(this.firebaseAuth, email, password);
+}
 }

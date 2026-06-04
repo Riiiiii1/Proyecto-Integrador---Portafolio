@@ -22,7 +22,7 @@
             <svg xmlns="http://www.w3.org/2000/svg" class="w-16 h-16 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" /></svg>
           </div>
           <p class="text-white/40 text-xs font-mono tracking-widest uppercase mb-2">Total Solicitudes</p>
-          <p class="text-5xl font-black text-white">{{ solicitudes().length }}</p>
+          <p class="text-5xl font-black text-white">{{ solicitudesResource.value()?.length ?? 0 }}</p>
         </div>
         
         <div class="border border-yellow-500/20 bg-yellow-500/5 rounded-2xl p-6 relative overflow-hidden group">
@@ -58,7 +58,7 @@
     </section>
 
     <section class="flex flex-col gap-4 w-full">
-      @if (cargando()) {
+      @if (solicitudesResource.isLoading()) {
         <div class="py-12 text-center animate-pulse">
           <p class="text-cyan-400 font-mono tracking-widest uppercase text-sm">Cargando solicitudes...</p>
         </div>

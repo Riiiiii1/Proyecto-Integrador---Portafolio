@@ -1,79 +1,57 @@
-import { Component, inject, signal, OnInit } from '@angular/core';
-import { RouterLink } from '@angular/router';
+import { Component, inject, signal, computed, resource } from '@angular/core';
+import { DatePipe } from '@angular/common';
+import { rxResource } from '@angular/core/rxjs-interop';
+import { from } from 'rxjs';
 import { Auth } from '../../../../core/services/auth/auth';
 import { Firestore } from '../../../../core/services/firestore/firestore';
 import { Solicitud } from '../../../../core/models/solicitud';
-import { DatePipe } from '@angular/common';
-
+import { StrapiService } from '../../../../core/services/strapi/strapi';
+import { map } from 'rxjs';
 @Component({
   selector: 'app-panel-page',
-  standalone: true,
-  imports: [RouterLink, DatePipe],
+  imports: [DatePipe],
   templateUrl: './panel-page.html'
 })
-export class PanelPage implements OnInit {
-  auth = inject(Auth);
-  firestore = inject(Firestore);
+export class PanelPage {
+  private strapiService = inject(StrapiService);
+  readonly auth      = inject(Auth);
+  private firestore  = inject(Firestore);
 
-  solicitudes = signal<Solicitud[]>([]);
   solicitudSeleccionada = signal<Solicitud | null>(null);
   filtroEstado = signal<'todas' | 'pendiente' | 'respondida'>('todas');
-  respuesta = signal('');
-  guardando = signal(false);
-  cargando = signal(true);
+  respuesta    = signal('');
+  guardando    = signal(false);
 
-  // Computados — se conectan a Firestore real cuando tu compañero lo configure
-  solicitudesFiltradas() {
-    if (this.filtroEstado() === 'todas') return this.solicitudes();
-    return this.solicitudes().filter(s => s.estado === this.filtroEstado());
+solicitudesResource = resource({
+  params: () => this.auth.currentUser()?.email,
+  loader: async ({ params: email }) => {
+    if (!email) return [];
+    
+    // Busca el slug del programador logueado en Strapi
+    const res = await this.strapiService.getProgramadores().pipe(
+      map(r => r.data.map(p => this.strapiService.mapProgramador(p)))
+    ).toPromise();
+    
+    const yo = res?.find(p => p.correo === email);
+    if (!yo) return [];
+    
+    return this.firestore.getSolicitudesDeProgramador(yo.slug);
   }
+});
 
-  totalPendientes() {
-    return this.solicitudes().filter(s => s.estado === 'pendiente').length;
-  }
+  solicitudesFiltradas = computed(() => {
+    const todas = this.solicitudesResource.value() ?? [];
+    if (this.filtroEstado() === 'todas') return todas;
+    return todas.filter(s => s.estado === this.filtroEstado());
+  });
 
-  totalRespondidas() {
-    return this.solicitudes().filter(s => s.estado === 'respondida').length;
-  }
+  totalPendientes = computed(() =>
+    (this.solicitudesResource.value() ?? []).filter(s => s.estado === 'pendiente').length
+  );
 
-  ngOnInit() {
-    this.cargarSolicitudes();
-  }
-
-  async cargarSolicitudes() {
-    this.cargando.set(true);
-    // TODO: reemplazar slug con el del programador logueado desde Firebase
-    const slug = 'david';
-    const data = await (this.firestore as any).getSolicitudesDeProgramador(slug);
-    // Mock temporal para diseño
-    this.solicitudes.set([
-      {
-        id: '1',
-        uid: 'user1',
-        correoUsuario: 'cliente1@email.com',
-        nombreSolicitante: 'Juan Pérez',
-        correoSolicitante: 'juan@email.com',
-        idea: 'Necesito una app de gestión de inventario para mi negocio.',
-        programadorSlug: slug,
-        estado: 'pendiente',
-        observacion: '',
-        creadoEn: new Date()
-      },
-      {
-        id: '2',
-        uid: 'user2',
-        correoUsuario: 'cliente2@email.com',
-        nombreSolicitante: 'María García',
-        correoSolicitante: 'maria@email.com',
-        idea: 'Quiero un portafolio web para mostrar mi trabajo de diseño.',
-        programadorSlug: slug,
-        estado: 'respondida',
-        observacion: 'Podemos agendar una reunión para discutir los detalles.',
-        creadoEn: new Date()
-      }
-    ]);
-    this.cargando.set(false);
-  }
+  totalRespondidas = computed(() =>
+    (this.solicitudesResource.value() ?? []).filter(s => s.estado === 'respondida').length
+  );
 
   seleccionar(solicitud: Solicitud) {
     this.solicitudSeleccionada.set(solicitud);
@@ -88,21 +66,18 @@ export class PanelPage implements OnInit {
   async guardarRespuesta() {
     const s = this.solicitudSeleccionada();
     if (!s?.id) return;
+
     this.guardando.set(true);
-    // TODO: conectar con firestore.actualizarSolicitud() real
-    await (this.firestore as any).actualizarSolicitud(s.id, {
-      estado: 'respondida',
-      observacion: this.respuesta()
-    });
-    // Actualizar local
-    this.solicitudes.update(lista =>
-      lista.map(x => x.id === s.id
-        ? { ...x, estado: 'respondida', observacion: this.respuesta() }
-        : x
-      )
-    );
-    this.guardando.set(false);
-    this.cerrarDetalle();
+    try {
+      await this.firestore.actualizarSolicitud(s.id, {
+        estado:      'respondida',
+        observacion: this.respuesta(),
+      });
+      this.solicitudesResource.reload();
+      this.cerrarDetalle();
+    } finally {
+      this.guardando.set(false);
+    }
   }
 
   setFiltro(f: 'todas' | 'pendiente' | 'respondida') {

@@ -46,9 +46,9 @@
                             class="w-full rounded-lg border border-white/10 bg-[#0a0f14] px-4 py-3 text-white focus:border-cyan-400 focus:ring-1 focus:ring-cyan-400 outline-none transition-all cursor-pointer appearance-none"
                             formControlName="programadorSlug">
                         <option value="" disabled selected hidden>Selecciona un miembro del equipo</option>
-                        @for (dev of strapi.programadores(); track dev.id) {
+                            @for (dev of programadoresResource.value(); track dev.id) {
                             <option [value]="dev.slug" class="bg-[#0a0f14] text-white">{{ dev.nombre }}</option>
-                        }
+                            }
                     </select>
                     <div class="absolute inset-y-0 right-0 flex items-center pr-4 pointer-events-none text-white/30">
                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-4 h-4">
@@ -75,10 +75,13 @@
                     <p class="text-xs text-red-400 mt-1">La descripción debe tener al menos 10 caracteres</p>
                 }
             </div>
+            @if (error()) {
+            <p class="text-red-400 text-sm font-mono">{{ error() }}</p>
+            }
 
-            <button type="submit" [disabled]="form.invalid"
-                class="mt-4 w-full rounded-lg bg-cyan-400 px-4 py-3 font-bold tracking-widest uppercase text-[#080d11] transition-all hover:bg-cyan-300 hover:shadow-[0_0_20px_rgba(34,211,238,0.3)] disabled:bg-white/5 disabled:text-white/30 disabled:shadow-none disabled:cursor-not-allowed">
-                Enviar Propuesta
+            <button type="submit" [disabled]="enviando()"
+            class="w-full bg-cyan-400 text-slate-950 font-bold tracking-widest uppercase py-3 rounded-lg hover:bg-cyan-300 transition-all disabled:opacity-50 disabled:cursor-not-allowed">
+            {{ enviando() ? 'Enviando...' : 'Enviar Solicitud' }}
             </button>
 
         </form>

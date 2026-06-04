@@ -1,48 +1,53 @@
-import { Injectable, signal, inject } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
+import {
+  Firestore as FirebaseFirestore,
+  collection,
+  addDoc,
+  query,
+  where,
+  getDocs,
+  doc,
+  updateDoc,
+  Timestamp
+} from '@angular/fire/firestore';
 import { Solicitud } from '../../models/solicitud';
-import { Auth } from '../auth/auth';
 
-@Injectable({
-  providedIn: 'root'
-})
+@Injectable({ providedIn: 'root' })
 export class Firestore {
-  private auth = inject(Auth);
-
-  // Mock local mientras Firebase no está configurado
-  private solicitudesMock: Solicitud[] = [];
-
-  solicitudes = signal<Solicitud[]>([]);
+  private db = inject(FirebaseFirestore);
 
   async crearSolicitud(solicitud: Omit<Solicitud, 'id'>): Promise<void> {
-    // Simula delay de red
-    await new Promise(r => setTimeout(r, 500));
-
-    const nueva: Solicitud = {
+    const ref = collection(this.db, 'solicitudes');
+    await addDoc(ref, {
       ...solicitud,
-      id: crypto.randomUUID(),
-      creadoEn: new Date()
-    };
-
-    this.solicitudesMock.push(nueva);
-    this.solicitudes.set([...this.solicitudesMock]);
+      creadoEn: Timestamp.now(),
+    });
   }
 
   async getSolicitudesDeUsuario(uid: string): Promise<Solicitud[]> {
-    await new Promise(r => setTimeout(r, 300));
-    return this.solicitudesMock.filter(s => s.uid === uid);
+    const ref = collection(this.db, 'solicitudes');
+    const q = query(ref, where('uid', '==', uid));
+    const snapshot = await getDocs(q);
+    return snapshot.docs.map(d => ({
+      id: d.id,
+      ...d.data(),
+      creadoEn: (d.data()['creadoEn'] as Timestamp).toDate(),
+    } as Solicitud));
   }
 
   async getSolicitudesDeProgramador(slug: string): Promise<Solicitud[]> {
-    await new Promise(r => setTimeout(r, 300));
-    return this.solicitudesMock.filter(s => s.programadorSlug === slug);
+    const ref = collection(this.db, 'solicitudes');
+    const q = query(ref, where('programadorSlug', '==', slug));
+    const snapshot = await getDocs(q);
+    return snapshot.docs.map(d => ({
+      id: d.id,
+      ...d.data(),
+      creadoEn: (d.data()['creadoEn'] as Timestamp).toDate(),
+    } as Solicitud));
   }
 
   async actualizarSolicitud(id: string, datos: Partial<Solicitud>): Promise<void> {
-    await new Promise(r => setTimeout(r, 300));
-    const index = this.solicitudesMock.findIndex(s => s.id === id);
-    if (index !== -1) {
-      this.solicitudesMock[index] = { ...this.solicitudesMock[index], ...datos };
-      this.solicitudes.set([...this.solicitudesMock]);
-    }
+    const ref = doc(this.db, 'solicitudes', id);
+    await updateDoc(ref, { ...datos });
   }
 }

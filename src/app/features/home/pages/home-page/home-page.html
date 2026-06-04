@@ -1,44 +1,50 @@
 <div class="flex flex-col items-center w-full bg-[#080d11]">
-  
   <app-hero class="w-full"></app-hero>
-
   <section class="w-full max-w-6xl mx-auto px-6 md:px-16 py-16 flex flex-col items-center">
-    <p class="text-cyan-400 text-xs font-mono tracking-widest uppercase mb-4 text-center">
-      El Equipo
-    </p>
+    <p class="text-cyan-400 text-xs font-mono tracking-widest uppercase mb-4 text-center">El Equipo</p>
     <h2 class="text-4xl md:text-5xl font-black text-white mb-12 text-center">
       Conoce a nuestros programadores
     </h2>
-    
+
+    @if (programadoresResource.isLoading()) {
+      <p class="text-white/40 font-mono text-sm">Cargando equipo...</p>
+    }
+    @if (programadoresResource.error()) {
+      <p class="text-red-400 font-mono text-sm">Error al cargar los programadores.</p>
+    }
+
     <div class="grid grid-cols-1 md:grid-cols-2 gap-6 w-full max-w-4xl mx-auto">
-      @for (programador of strapi.programadores(); track programador.id) {
+      @for (programador of programadoresResource.value(); track programador.id) {
         <app-card-programador [programador]="programador" />
       }
     </div>
   </section>
- 
-  <section class="w-full max-w-6xl mx-auto px-6 md:px-16 py-16 border-t border-white/5 flex flex-col items-center">
-    <p class="text-cyan-400 text-xs font-mono tracking-widest uppercase mb-4 text-center">
-      ¿Qué Hacemos?
-    </p>
-    <h2 class="text-4xl md:text-5xl font-black text-white mb-12 text-center">
-      Habilidades Técnicas
-    </h2>
 
+
+  <section class="w-full max-w-6xl mx-auto px-6 md:px-16 py-16 border-t border-white/5 flex flex-col items-center">
+    <p class="text-cyan-400 text-xs font-mono tracking-widest uppercase mb-4 text-center">¿Qué Hacemos?</p>
+    <h2 class="text-4xl md:text-5xl font-black text-white mb-12 text-center">Habilidades Técnicas</h2>
+
+    @if (serviciosResource.isLoading()) {
+      <p class="text-white/40 font-mono text-sm">Cargando servicios...</p>
+    }
     <div class="grid grid-cols-1 md:grid-cols-3 gap-6 w-full">
-      @for (servicio of strapi.servicios(); track servicio.id) {
+      @for (servicio of serviciosResource.value(); track servicio.id) {
         <div class="border border-white/10 bg-white/5 rounded-xl p-8 hover:border-cyan-500/40 transition-all flex flex-col items-center text-center">
           <div class="w-14 h-14 rounded-lg bg-cyan-500/10 border border-cyan-500/20 flex items-center justify-center mb-6">
             @if (servicio.icono === 'monitor') {
               <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24" stroke="#22d3ee" stroke-width="2">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M4 4h16v13H4z"/><path stroke-linecap="round" stroke-linejoin="round" d="M8 17v3m8-3v3M2 20h20"/>
+                <path stroke-linecap="round" stroke-linejoin="round" d="M4 4h16v13H4z"/>
+                <path stroke-linecap="round" stroke-linejoin="round" d="M8 17v3m8-3v3M2 20h20"/>
               </svg>
             }
             @if (servicio.icono === 'server') {
               <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24" stroke="#22d3ee" stroke-width="2">
-                <rect x="2" y="3" width="20" height="5" rx="1"/><rect x="2" y="10" width="20" height="5" rx="1"/>
+                <rect x="2" y="3" width="20" height="5" rx="1"/>
+                <rect x="2" y="10" width="20" height="5" rx="1"/>
                 <rect x="2" y="17" width="20" height="5" rx="1"/>
-                <circle cx="6" cy="5.5" r="0.5" fill="#22d3ee"/><circle cx="6" cy="12.5" r="0.5" fill="#22d3ee"/>
+                <circle cx="6" cy="5.5" r="0.5" fill="#22d3ee"/>
+                <circle cx="6" cy="12.5" r="0.5" fill="#22d3ee"/>
               </svg>
             }
             @if (servicio.icono === 'palette') {
@@ -53,38 +59,40 @@
       }
     </div>
   </section>
-
   <section class="w-full max-w-7xl mx-auto px-6 md:px-16 py-16 border-t border-white/5 flex flex-col items-center">
-    <p class="text-cyan-400 text-xs font-mono tracking-widest uppercase mb-4 text-center">
-      Trabajos
-    </p>
+    <p class="text-cyan-400 text-xs font-mono tracking-widest uppercase mb-4 text-center">Trabajos</p>
     <h2 class="text-4xl md:text-5xl font-black text-white mb-12 text-center">
-      Proyectos Destacados
+
+      @if (auth.isProgramador()) {
+        Mis Proyectos
+      } @else {
+        Proyectos Destacados
+      }
     </h2>
+    @if (proyectosResource.isLoading()) {
+      <p class="text-white/40 font-mono text-sm">Cargando proyectos...</p>
+    }
 
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 w-full">
-      @for (proyecto of strapi.destacados(); track proyecto.id) {
-        <app-card-proyecto 
-          [proyecto]="proyecto" 
-          [programadores]="strapi.programadores()" />
+      @for (proyecto of proyectosFiltrados(); track proyecto.id) {
+        <app-card-proyecto
+          [proyecto]="proyecto"
+          [programadores]="programadoresResource.value() ?? []" />
       }
     </div>
   </section>
+  @if (!auth.isProgramador()) {
+    <section class="w-full max-w-4xl mx-auto px-6 md:px-16 py-20 border-t border-white/5 flex flex-col items-center text-center">
+      <p class="text-cyan-400 text-xs font-mono tracking-widest uppercase mb-4">Trabaja Con Nosotros</p>
+      <h2 class="text-4xl md:text-5xl font-black text-white mb-6">¿Tienes un proyecto en mente?</h2>
+      <p class="text-white/50 mb-10 max-w-lg mx-auto text-lg">
+        Cuéntanos tu idea y construyamos algo increíble juntos.
+      </p>
+      <a routerLink="/solicitudes/nueva"
+         class="bg-cyan-400 text-slate-950 font-bold tracking-widest uppercase px-8 py-3 rounded-lg hover:bg-cyan-300 transition-all">
+        Iniciar Proyecto
+      </a>
+    </section>
+  }
 
-  <section class="w-full max-w-4xl mx-auto px-6 md:px-16 py-20 border-t border-white/5 flex flex-col items-center text-center">
-    <p class="text-cyan-400 text-xs font-mono tracking-widest uppercase mb-4">
-      Trabaja Con Nosotros
-    </p>
-    <h2 class="text-4xl md:text-5xl font-black text-white mb-6">
-      ¿Tienes un proyecto en mente?
-    </h2>
-    <p class="text-white/50 mb-10 max-w-lg mx-auto text-lg">
-      Cuéntanos tu idea y construyamos algo increíble juntos.
-    </p>
-    <a routerLink="/solicitudes/nueva"
-       class="bg-cyan-400 text-slate-950 font-bold tracking-widest uppercase px-8 py-3 rounded-lg hover:bg-cyan-300 hover:shadow-[0_0_20px_rgba(34,211,238,0.4)] transition-all">
-      Iniciar Proyecto
-    </a>
-  </section>
-  
 </div>

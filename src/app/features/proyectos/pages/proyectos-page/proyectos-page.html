@@ -35,24 +35,24 @@
   </section>
 
 
-  <section>
-    @if (strapi.cargando()) {
-      <div class="flex items-center justify-center py-24">
-        <p class="text-white/30 font-mono tracking-widest">Cargando proyectos...</p>
-      </div>
-    } @else if (proyectosFiltrados().length === 0) {
-      <div class="flex items-center justify-center py-24">
-        <p class="text-white/30 font-mono tracking-widest">No hay proyectos en esta categoría.</p>
-      </div>
-    } @else {
-      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        @for (proyecto of proyectosFiltrados(); track proyecto.id) {
-          <app-card-proyecto
-            [proyecto]="proyecto"
-            [programadores]="strapi.programadores()" />
-        }
-      </div>
-    }
-  </section>
+<section>
+  @if (proyectosResource.isLoading()) {
+    <div class="flex items-center justify-center py-24">
+      <p class="text-white/30 font-mono tracking-widest">Cargando proyectos...</p>
+    </div>
+  } @else if (proyectosFiltrados().length === 0) {
+    <div class="flex items-center justify-center py-24">
+      <p class="text-white/30 font-mono tracking-widest">No hay proyectos en esta categoría.</p>
+    </div>
+  } @else {
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      @for (proyecto of proyectosFiltrados(); track proyecto.id) {
+        <app-card-proyecto
+          [proyecto]="proyecto"
+          [programadores]="programadoresResource.value() ?? []" />
+      }
+    </div>
+  }
+</section>
 
 </main>
