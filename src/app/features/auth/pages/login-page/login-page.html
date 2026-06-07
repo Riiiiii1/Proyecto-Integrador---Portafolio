@@ -18,13 +18,13 @@
                 <label for="email" class="block text-sm font-semibold text-white/90">Email</label>
                 <input id="email" type="email"
                     class="w-full rounded-lg border border-white/10 bg-[#0a0f14] px-4 py-3 text-white placeholder-white/20 focus:border-cyan-400 focus:ring-1 focus:ring-cyan-400 outline-none transition-all"
-                    placeholder="micorreo@email.com" formControlName="email">
+                    placeholder="juanperez@gmail.com" formControlName="email">
 
                 @if(email.touched && email.hasError('required')){
-                    <p class="text-xs text-red-400 mt-1">El email es requerido</p>
+                    <p class="text-xs text-red-400 mt-1">El correo electrónico es requerido</p>
                 }
                 @if(email.touched && email.hasError('email')){
-                    <p class="text-xs text-red-400 mt-1">El email es inválido</p>
+                    <p class="text-xs text-red-400 mt-1">El correo electrónico  es inválido</p>
                 }
             </div>
 

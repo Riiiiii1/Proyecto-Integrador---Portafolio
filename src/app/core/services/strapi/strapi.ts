@@ -145,8 +145,22 @@ export class StrapiService {
    * Trae exclusivamente las solicitudes que el cliente logueado ha enviado (Pestaña "Solicitudes Enviadas").
    */
   getSolicitudesDeCliente(correo: string): Observable<any[]> {
-    return this.http.get<any>(`${this.base}/api/solicitudes?filters[correoSolicitante][$eq]=${correo}&populate=*`).pipe(
-      map(response => response.data)
+    return this.http.get<any>(`${this.base}/api/solicituds?filters[correoSolicitante][$eq]=${correo}&populate=*`).pipe(
+      map(response => response.data.map((item: any) => {
+        const dataReal = item.attributes ? item.attributes : item;
+        return {
+          // EL SECRETO: Si existe un documentId (Strapi moderno), lo usamos. Si no, usamos el id clásico.
+          id: item.documentId || item.id, 
+          nombreSolicitante: dataReal.nombreSolicitante,
+          correoSolicitante: dataReal.correoSolicitante,
+          programadorSlug: dataReal.programadorSlug,
+          idea: dataReal.idea,
+          // Añadimos los nuevos campos para que Angular también los lea
+          estado: dataReal.estado,
+          observacion: dataReal.observacion,
+          creadoEn: dataReal.createdAt || item.createdAt 
+        };
+      }))
     );
   }
 
@@ -154,8 +168,31 @@ export class StrapiService {
    * Trae las solicitudes asignadas a un programador (Pestaña "Mis Solicitudes" del Panel).
    */
   getSolicitudesDeProgramador(slug: string): Observable<any[]> {
-    return this.http.get<any>(`${this.base}/api/solicitudes?filters[programadorSlug][$eq]=${slug}&populate=*`).pipe(
-      map(response => response.data)
+    return this.http.get<any>(`${this.base}/api/solicituds?filters[programadorSlug][$eq]=${slug}&populate=*`).pipe(
+      map(response => response.data.map((item: any) => {
+        const dataReal = item.attributes ? item.attributes : item;
+        return {
+          // Extraemos el identificador correcto para poder actualizar después
+          id: item.documentId || item.id, 
+          nombreSolicitante: dataReal.nombreSolicitante,
+          correoSolicitante: dataReal.correoSolicitante,
+          programadorSlug: dataReal.programadorSlug,
+          idea: dataReal.idea,
+          estado: dataReal.estado,
+          observacion: dataReal.observacion,
+          creadoEn: dataReal.createdAt || item.createdAt
+        };
+      }))
     );
   }
+
+  /**
+   * Modifica y actualiza una propuesta existente en la base de datos de Strapi.
+   * Utiliza el comando PUT apuntando al número de identificación único de la solicitud.
+   */
+  actualizarSolicitud(id: number | string, datos: any): Observable<any> {
+    // Strapi requiere que los datos a modificar vengan envueltos dentro de un objeto llamado 'data'
+    return this.http.put<any>(`${this.base}/api/solicituds/${id}`, { data: datos });
+  }
+  
 }

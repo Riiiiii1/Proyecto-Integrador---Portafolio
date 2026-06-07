@@ -54,21 +54,28 @@ export class NuevaSolicitudPage implements OnInit {
       return;
     }
 
-    // Activamos la animación de "Enviando..."
     this.enviando.set(true);
-
     const nuevaSolicitud = this.form.getRawValue();
 
     this.strapi.crearSolicitud(nuevaSolicitud).subscribe({
       next: () => {
-        // Apagamos el envío y mostramos el cuadro de éxito
+        // Mostramos el mensaje de éxito
         this.enviando.set(false);
         this.mensajeExito.set(true);
         
-        // Esperamos 3 segundos exactos para que el cliente lea el mensaje
+        // Esperamos 5 segundos exactos
         setTimeout(() => {
-          this.router.navigate(['/solicitudes/mis']);
-        }, 5000);
+          // 1. Ocultamos el mensaje de éxito (esto hace que reaparezca el formulario)
+          this.mensajeExito.set(false);
+          
+          // 2. Limpiamos todos los campos, pero volvemos a inyectar el correo para que no se pierda
+          this.form.reset({
+            correoSolicitante: this.auth.currentUser()?.email,
+            nombreSolicitante: '',
+            programadorSlug: '',
+            idea: ''
+          });
+        }, 5000); // 5000 milisegundos = 5 segundos
       },
       error: (err) => {
         console.error('Error al registrar en Strapi:', err);

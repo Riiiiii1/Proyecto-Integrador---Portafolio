@@ -1,1 +1,77 @@
-<p>lista-solicitudes-page works!</p>
+<div class="w-full min-h-[calc(100vh-140px)] bg-[#080d11] px-4 py-12 flex flex-col items-center justify-start">
+  <div class="w-full max-w-3xl space-y-8">
+    
+    <header class="space-y-3 text-center">
+      <p class="text-xs font-semibold uppercase tracking-[0.3em] text-cyan-400">Historial Personal</p>
+      <h1 class="text-3xl font-bold tracking-tight text-white md:text-4xl">
+        Mis Solicitudes Enviadas
+      </h1>
+      <p class="leading-7 text-white/60 text-base max-w-2xl mx-auto">
+        En esta pantalla usted puede revisar detalladamente todas las ideas y propuestas de proyectos que ha mandado a nuestro equipo de desarrollo.
+      </p>
+    </header>
+
+    @if (cargandoDatos()) {
+      <div class="text-center py-12 bg-white/5 rounded-2xl border border-white/10 backdrop-blur-sm">
+        <p class="text-cyan-400 font-medium tracking-wide animate-pulse text-lg">
+          Por favor espere un momento, estamos buscando sus mensajes en la base de datos...
+        </p>
+      </div>
+    }
+
+    @else if (solicitudesEnviadas().length === 0) {
+      <div class="text-center py-16 bg-white/5 rounded-2xl border border-white/10 backdrop-blur-sm space-y-4">
+        <div class="text-white/20 flex justify-center">
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1" stroke="currentColor" class="w-16 h-16">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M21.75 6.75v10.5a2.25 2.25 0 01-2.25 2.25H4.5A2.25 2.25 0 012.25 17.25V6.75m19.5 0A2.25 2.25 0 0019.5 4.5H4.5a2.25 2.25 0 00-2.25 2.25m19.5 0v.243a2.25 2.25 0 01-1.07 1.916l-7.5 4.615a2.25 2.25 0 01-2.36 0L3.32 8.91a2.25 2.25 0 01-1.07-1.916V6.75" />
+          </svg>
+        </div>
+        <h2 class="text-xl font-bold text-white">Usted aún no ha enviado ninguna solicitud</h2>
+        <p class="text-white/40 text-sm max-w-md mx-auto">
+          Si desea ponerse en contacto con nosotros para iniciar un proyecto juntos, presione la opción "Nueva Solicitud" en la barra superior.
+        </p>
+      </div>
+    }
+
+    @else {
+      <div class="space-y-6">
+        @for (solicitud of solicitudesEnviadas(); track solicitud.id) {
+          <div class="bg-white/5 p-6 rounded-2xl border border-white/10 backdrop-blur-sm shadow-xl space-y-4 text-left">
+            
+            <div class="flex flex-wrap justify-between items-center gap-2 border-b border-white/5 pb-3">
+              <div>
+                <p class="text-xs font-mono text-cyan-400 uppercase tracking-wider">Desarrollador Destinatario</p>
+                <h3 class="text-lg font-bold text-white mt-0.5">
+                  @if (solicitud.programadorSlug === 'david-sisa') {
+                    David Sisa Buestan
+                  } @else if (solicitud.programadorSlug === 'carlos-gordillo') {
+                    Carlos Gordillo Tenemaza
+                  } @else {
+                    {{ solicitud.programadorSlug }}
+                  }
+                </h3>
+              </div>
+              <div class="bg-cyan-400/10 border border-cyan-400/30 px-3 py-1 rounded-full">
+                <span class="text-xs font-semibold text-cyan-400 uppercase tracking-wider">Mensaje Recibido</span>
+              </div>
+            </div>
+
+            <div>
+              <p class="text-xs font-mono text-white/40 uppercase tracking-wider">Nombre que usted registró</p>
+              <p class="text-white/90 font-medium text-base">{{ solicitud.nombreSolicitante }}</p>
+            </div>
+
+            <div class="bg-black/30 p-4 rounded-xl border border-white/5">
+              <p class="text-xs font-mono text-white/40 uppercase tracking-wider mb-1">Descripción de la idea enviada</p>
+              <p class="text-white/80 leading-relaxed text-base whitespace-pre-wrap">
+                {{ solicitud.idea }}
+              </p>
+            </div>
+
+          </div>
+        }
+      </div>
+    }
+
+  </div>
+</div>
