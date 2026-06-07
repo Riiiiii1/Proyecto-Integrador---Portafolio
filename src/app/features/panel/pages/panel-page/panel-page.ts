@@ -1,19 +1,19 @@
-import { Component, inject, signal, OnInit } from '@angular/core';
+import { Component, inject, signal, OnInit, OnDestroy } from '@angular/core';
 import { RouterLink } from '@angular/router';
-import { Auth } from '../../../../core/services/auth/auth'; // 
-import { StrapiService } from '../../../../core/services/strapi/strapi'; // Cambiado de Firestore a Strapi
+import { Auth } from '../../../../core/services/auth/auth'; 
+import { StrapiService } from '../../../../core/services/strapi/strapi'; 
 import { Solicitud } from '../../../../core/models/solicitud';
-import { DatePipe } from '@angular/common'; // 
+import { DatePipe } from '@angular/common'; 
 
 @Component({
   selector: 'app-panel-page',
   standalone: true,
-  imports: [RouterLink, DatePipe], // 
+  imports: [RouterLink, DatePipe], 
   templateUrl: './panel-page.html'
 })
-export class PanelPage implements OnInit {
-  auth = inject(Auth); // 
-  private strapi = inject(StrapiService); // Inyectamos nuestro puente real a Strapi
+export class PanelPage implements OnInit, OnDestroy {
+  auth = inject(Auth); 
+  private strapi = inject(StrapiService); 
 
   solicitudes = signal<any[]>([]);
   solicitudSeleccionada = signal<any | null>(null);
@@ -21,6 +21,9 @@ export class PanelPage implements OnInit {
   respuesta = signal('');
   guardando = signal(false);
   cargando = signal(true);
+
+  // Referencia para limpiar el temporizador al salir del componente
+  private intervaloId: any;
 
   // Filtra los datos en pantalla de forma reactiva
   solicitudesFiltradas() {
@@ -37,28 +40,41 @@ export class PanelPage implements OnInit {
   }
 
   ngOnInit() {
-    this.cargarSolicitudes();
+    // 1. Carga inicial con animación de carga
+    this.cargarSolicitudes(true);
+
+    // 2. Escucha activa cada 3 segundos (silenciosa, sin animación de carga ruda)
+    this.intervaloId = setInterval(() => {
+      // Solo refresca si el programador NO está escribiendo una respuesta en una modal abierta
+      if (!this.solicitudSeleccionada() && !this.guardando()) {
+        this.cargarSolicitudes(false);
+      }
+    }, 3000);
   }
 
-  cargarSolicitudes() {
-    this.cargando.set(true);
+  // Añadimos el parámetro opcional 'mostrarLoading' para controlar los parpadeos de pantalla
+  cargarSolicitudes(mostrarLoading: boolean = false) {
+    if (mostrarLoading) {
+      this.cargando.set(true);
+    }
 
-    // 1. Identificar quién inició sesión mediante su correo de Google
+    // Identificar quién inició sesión mediante su correo de Google
     const emailLogueado = this.auth.currentUser()?.email;
-    let miSlug = 'carlos-gordillo'; // Por defecto Carlos
+    let miSlug = 'carlos-gordillo'; 
 
     if (emailLogueado === 'desbskull@gmail.com' || emailLogueado === 'sisabuestandavidesteban@gmail.com') {
       miSlug = 'david-sisa';
     }
 
-    // 2. Traer las solicitudes verdaderas desde la base de datos de Strapi
+    // Traer las solicitudes verdaderas desde la base de datos de Strapi
     this.strapi.getSolicitudesDeProgramador(miSlug).subscribe({
       next: (datos) => {
         // Mapeamos los datos asegurando que tengan un estado por defecto si están vacíos en Strapi
         const limpias = (datos || []).map(s => ({
           ...s,
-          estado: s.estado ? s.estado : 'pendiente' // Si no tiene estado, es nueva (pendiente)
+          estado: s.estado ? s.estado : 'pendiente' 
         }));
+        
         this.solicitudes.set(limpias);
         this.cargando.set(false);
       },
@@ -74,6 +90,10 @@ export class PanelPage implements OnInit {
     this.respuesta.set(solicitud.observacion || ''); 
   }
 
+  cerrarDetail() {
+    this.cerrarDetalle();
+  }
+
   cerrarDetalle() {
     this.solicitudSeleccionada.set(null);
     this.respuesta.set('');
@@ -85,16 +105,13 @@ export class PanelPage implements OnInit {
     
     this.guardando.set(true);
 
-    // Creamos el paquete exacto con los datos que se van a modificar en el servidor
     const datosActualizados = {
       estado: 'respondida',
       observacion: this.respuesta()
     };
 
-    // LLAMADA CORREGIDA: Usamos 'actualizarSolicitud' enviando el ID único y el paquete de datos
     this.strapi.actualizarSolicitud(s.id, datosActualizados).subscribe({
       next: () => {
-        // Actualizamos de forma inmediata la tarjeta en la pantalla del usuario sin recargar toda la página
         this.solicitudes.update(lista =>
           lista.map(x => x.id === s.id
             ? { ...x, estado: 'respondida', observacion: this.respuesta() }
@@ -103,6 +120,9 @@ export class PanelPage implements OnInit {
         ); 
         this.guardando.set(false); 
         this.cerrarDetalle();
+        
+        // Forzamos un refresco inmediato tras guardar para asegurar simetría de datos
+        this.cargarSolicitudes(false);
       },
       error: (err) => {
         console.error('Error al actualizar el estado en Strapi:', err);
@@ -114,5 +134,12 @@ export class PanelPage implements OnInit {
 
   setFiltro(f: 'todas' | 'pendiente' | 'respondida') {
     this.filtroEstado.set(f); 
+  }
+
+  // Destruimos el temporizador al salir de la página para que la app no trabaje de más
+  ngOnDestroy() {
+    if (this.intervaloId) {
+      clearInterval(this.intervaloId);
+    }
   }
 }

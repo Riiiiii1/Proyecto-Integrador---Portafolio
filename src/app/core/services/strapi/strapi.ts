@@ -158,6 +158,7 @@ export class StrapiService {
           // Añadimos los nuevos campos para que Angular también los lea
           estado: dataReal.estado,
           observacion: dataReal.observacion,
+          leido: dataReal.leido,
           creadoEn: dataReal.createdAt || item.createdAt 
         };
       }))
