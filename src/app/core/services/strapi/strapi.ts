@@ -3,14 +3,14 @@ import { HttpClient } from '@angular/common/http';
 import { Programador } from '../../models/programador';
 import { Proyecto, Servicio } from '../../models/proyecto';
 import { environment } from '../../../../environments/environment';
-
+import { Observable, map } from 'rxjs'; // <-- Añadido para las peticiones de solicitudes
 
 // hecho por el GEMINI (ESTOS DATOS DEBES CONSUMIR DESDE STRAPI CARLOS)
 const MOCK_PROGRAMADORES: Programador[] = [
   {
     // DATOS DE DAVID 
     id: 1, slug: 'david-sisa',
-    nombre: 'David Sisa Buestan', especialidad: 'Full Stack Developer',
+    nombre: 'David Esteban Sisa Buestan', especialidad: 'Full Stack Developer',
     descripcionBreve: 'Desarrollador apasionado por crear soluciones web completas.',
     descripcionCompleta: 'bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla',
     fotoPerfil: '',
@@ -21,7 +21,7 @@ const MOCK_PROGRAMADORES: Programador[] = [
   {
     // DATOS DE CARLOS
     id: 2, slug: 'carlos-gordillo',
-    nombre: 'Carlos Gordillo', especialidad: 'Full Stack Developer',
+    nombre: 'Carlos Antonio Gordillo Tenemaza', especialidad: 'Full Stack Developer',
     descripcionBreve: 'Estudiante de Ingeniería en Computación. Especialista en seguridad backend, optimización de bases de datos y diseño de interfaces limpias.',
     descripcionCompleta: 'Soy estudiante de quinto ciclo de Ingeniería en Computación con un fuerte enfoque en el rendimiento y la escalabilidad. En mi experiencia profesional colaborando con Territorios Inteligentes, me he especializado en la reingeniería de sistemas: desde el rediseño minimalista y centrado en la UX del Portal Ciudadano usando Angular, hasta la robustez del backend. He implementado capas de seguridad estrictas en servicios REST y SOAP, manejo automático de recursos, validación de tokens y optimización de consultas SQL para sistemas de recaudación y trámites.',
     fotoPerfil: '', 
@@ -81,6 +81,7 @@ const DATOS = true;
 export class StrapiService {
   private http = inject(HttpClient);
   private base = environment.strapiUrl;
+  
   // Estados reactivos para programadores, proyectos y servicios con modelos
   programadores = signal<Programador[]>([]);
   proyectos     = signal<Proyecto[]>([]);
@@ -91,6 +92,7 @@ export class StrapiService {
   destacados = computed(() =>
     this.proyectos().filter(p => p.destacado)
   );
+  
   // Funciones para obtener programadores y proyectos por el nombre o slug
   getPorSlug(slug: string) {
     return computed(() =>
@@ -125,5 +127,35 @@ export class StrapiService {
       this.servicios.set(servs?.data ?? []);
     }
     this.cargando.set(false);
+  }
+
+  // =================================================================================
+  // NUEVOS MÉTODOS PARA SOLICITUDES (Los formularios de contacto de los clientes)
+  // =================================================================================
+
+  /**
+   * Guarda una nueva solicitud enviada por un cliente en Strapi.
+   */
+  crearSolicitud(datos: any): Observable<any> {
+    // Fíjate que ahora dice "solicituds"
+    return this.http.post<any>(`${this.base}/api/solicituds`, { data: datos }); 
+  }
+
+  /**
+   * Trae exclusivamente las solicitudes que el cliente logueado ha enviado (Pestaña "Solicitudes Enviadas").
+   */
+  getSolicitudesDeCliente(correo: string): Observable<any[]> {
+    return this.http.get<any>(`${this.base}/api/solicitudes?filters[correoSolicitante][$eq]=${correo}&populate=*`).pipe(
+      map(response => response.data)
+    );
+  }
+
+  /**
+   * Trae las solicitudes asignadas a un programador (Pestaña "Mis Solicitudes" del Panel).
+   */
+  getSolicitudesDeProgramador(slug: string): Observable<any[]> {
+    return this.http.get<any>(`${this.base}/api/solicitudes?filters[programadorSlug][$eq]=${slug}&populate=*`).pipe(
+      map(response => response.data)
+    );
   }
 }

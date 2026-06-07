@@ -9,21 +9,25 @@ import { toSignal } from '@angular/core/rxjs-interop';
   providedIn: 'root',
 })
 export class Auth {
-    private router = inject(Router);
-    private firebaseAuth = inject(FirebaseAuth); // Inyectamos el servicio de Firebase [cite: 11]
+  private router = inject(Router);
+  private firebaseAuth = inject(FirebaseAuth); // Inyectamos el servicio de Firebase [cite: 11]
 
   // Estado reactivo para el usuario actual (Conectado directamente a Firebase a través de toSignal) [cite: 7, 11]
   currentUser = toSignal(authState(this.firebaseAuth));
 
   // Estados computados para verificar si el usuario está logueado y si es programador [cite: 8, 11]
   isLoggedIn = computed(() => this.currentUser() !== null && this.currentUser() !== undefined);
-  
+
   isProgramador = computed(() => {
     const user = this.currentUser();
     if (!user || !user.email) return false;
     // Verificar si el email del usuario está en la lista de programadores autorizados [cite: 9, 11]
     // (Añadimos tu cuenta de Gmail de soporte para las pruebas de acceso al Panel)
-    const emailsProgramadores = ['david@email.com', 'carlos@email.com', 'antoniogordillo.1808@gmail.com'];
+    const emailsProgramadores =
+      ['desbskull@gmail.com',
+        'sisabuestandavidesteban@gmail.com',
+        'antoniogordillo.1808@gmail.com'
+      ];
     return emailsProgramadores.includes(user.email);
   });
 
@@ -41,14 +45,14 @@ export class Auth {
    */
   loginWithGoogle() {
     const provider = new GoogleAuthProvider();
-    
+
     // =========================================================================
     // LÍNEA CLAVE AÑADIDA: Forza a Google a pedir la selección de cuenta siempre
     // =========================================================================
     provider.setCustomParameters({
       prompt: 'select_account'
     });
-    
+
     return signInWithPopup(this.firebaseAuth, provider);
   }
 }
