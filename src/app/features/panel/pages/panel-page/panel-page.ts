@@ -8,7 +8,7 @@ import { DatePipe } from '@angular/common';
 @Component({
   selector: 'app-panel-page',
   standalone: true,
-  imports: [RouterLink, DatePipe], 
+  imports: [DatePipe], 
   templateUrl: './panel-page.html'
 })
 export class PanelPage implements OnInit, OnDestroy {

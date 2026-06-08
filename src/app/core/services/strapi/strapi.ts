@@ -13,7 +13,7 @@ const MOCK_PROGRAMADORES: Programador[] = [
     nombre: 'David Esteban Sisa Buestan', especialidad: 'Full Stack Developer',
     descripcionBreve: 'Desarrollador apasionado por crear soluciones web completas.',
     descripcionCompleta: 'bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla',
-    fotoPerfil: '',
+    fotoPerfil: '01Sisa.png',
     correo: 'desbskull@email.com', github: 'https://github.com/riiiiii1',
     linkedin: 'https://linkedin.com/in/david-esteban-sisa', activo: true,
     stack: ['Angular', 'Node', 'Firebase']
@@ -24,7 +24,7 @@ const MOCK_PROGRAMADORES: Programador[] = [
     nombre: 'Carlos Antonio Gordillo Tenemaza', especialidad: 'Full Stack Developer',
     descripcionBreve: 'Estudiante de Ingeniería en Computación. Especialista en seguridad backend, optimización de bases de datos y diseño de interfaces limpias.',
     descripcionCompleta: 'Soy estudiante de quinto ciclo de Ingeniería en Computación con un fuerte enfoque en el rendimiento y la escalabilidad. En mi experiencia profesional colaborando con Territorios Inteligentes, me he especializado en la reingeniería de sistemas: desde el rediseño minimalista y centrado en la UX del Portal Ciudadano usando Angular, hasta la robustez del backend. He implementado capas de seguridad estrictas en servicios REST y SOAP, manejo automático de recursos, validación de tokens y optimización de consultas SQL para sistemas de recaudación y trámites.',
-    fotoPerfil: '', 
+    fotoPerfil: '02Gordillo.jpeg', 
     correo: 'antoniogordillo.1808@gmail.com', 
     github: 'https://github.com/antonikr8s', 
     linkedin: 'https://www.linkedin.com/in/carlos-antonio-gordillo-tenemaza-828540281', 
@@ -33,35 +33,43 @@ const MOCK_PROGRAMADORES: Programador[] = [
   }
 ];
 
+// ============================================================
+// REEMPLAZA SOLO EL BLOQUE const MOCK_PROYECTOS en strapi.ts
+// ============================================================
+
 const MOCK_PROYECTOS: Proyecto[] = [
   {
+    // Proyecto inventado (ambos participan) — sin repositorio real
     id: 1, slug: 'proyecto-uno', nombre: 'Proyecto Uno',
     descripcionBreve: 'App web fullstack con Angular y Node.',
     descripcionCompleta: 'Descripción detallada...',
     imagen: 'https://picsum.photos/seed/p1/600/400',
     tipo: 'academico', tecnologias: ['Angular', 'Node', 'Firebase'],
-    repositorio: 'https://github.com', demo: 'https://demo.com',
-    destacado: true, programadores: [1, 2] // Aquí participan ambos
+    repositorio: '', // Sin repo real → no muestra el botón GitHub
+    demo: 'https://demo.com',
+    destacado: true, programadores: [1, 2]
   },
   {
+    // Proyecto de David — GitHub apunta al perfil de David
     id: 2, slug: 'proyecto-dos', nombre: 'Proyecto Dos',
     descripcionBreve: 'Dashboard de análisis con charts.',
     descripcionCompleta: 'Descripción detallada...',
     imagen: 'https://picsum.photos/seed/p2/600/400',
     tipo: 'personal', tecnologias: ['Angular', 'Chart.js'],
-    repositorio: 'https://github.com', demo: '',
-    destacado: true, programadores: [1] // Solo David
+    repositorio: 'https://github.com/riiiiii1', // Perfil de David
+    demo: '',
+    destacado: true, programadores: [1]
   },
   {
-    //TERRITORIOS INTELIGENTES
+    // Proyecto de Carlos (Territorios Inteligentes) — GitHub apunta al perfil de Carlos
     id: 3, slug: 'portal-ciudadano', nombre: 'Portal Ciudadano & Banca Core',
     descripcionBreve: 'Rediseño UX/UI e implementación de seguridad en servicios REST/SOAP.',
     descripcionCompleta: 'Proyecto de modernización para Territorios Inteligentes. En el Frontend, rediseñé la interfaz del portal de trámites aplicando estandarización de componentes (Cards), validaciones reactivas en tiempo real y nuevos sistemas de CAPTCHA visual. En el Backend, reestructuré la lógica de servicios bancarios (REST/SOAP) implementando cierres automáticos de conexión (try-with-resources), validación de accesos por token, control de transacciones (rollback) y optimización de filtros directamente en SQL.',
-    imagen: 'https://picsum.photos/seed/carlos1/600/400', 
+    imagen: 'https://picsum.photos/seed/carlos1/600/400',
     tipo: 'laboral', tecnologias: ['Angular', 'Java', 'SQL', 'SOAP/REST'],
-    repositorio: '', 
+    repositorio: 'https://github.com/antonikr8s', // Perfil de Carlos
     demo: '',
-    destacado: true, programadores: [2] // Solo Carlos
+    destacado: true, programadores: [2]
   }
 ];
 
