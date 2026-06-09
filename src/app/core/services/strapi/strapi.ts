@@ -1,5 +1,5 @@
 import { Injectable, computed, inject } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http'; // <-- Añadido HttpHeaders
 import { Observable, tap, catchError, throwError } from 'rxjs';
 import { Programador } from '../../models/programador';
 import { Proyecto, Servicio } from '../../models/proyecto';
@@ -51,9 +51,15 @@ export class StrapiService {
   private http = inject(HttpClient);
   private base = environment.strapiUrl;
 
+  private httpOptions = {
+    headers: new HttpHeaders({
+      'ngrok-skip-browser-warning': 'true'
+    })
+  };
+
   getProgramadores(): Observable<StrapiResponse<StrapiProgramador>> {
     return this.http
-      .get<StrapiResponse<StrapiProgramador>>(`${this.base}/api/programadors?populate=*`)
+      .get<StrapiResponse<StrapiProgramador>>(`${this.base}/api/programadors?populate=*`, this.httpOptions)
       .pipe(
         tap(res => console.log('Programadores:', res)),
         catchError(() =>
@@ -64,7 +70,7 @@ export class StrapiService {
 
   getProyectos(): Observable<StrapiResponse<StrapiProyecto>> {
     return this.http
-      .get<StrapiResponse<StrapiProyecto>>(`${this.base}/api/proyectos?populate=*`)
+      .get<StrapiResponse<StrapiProyecto>>(`${this.base}/api/proyectos?populate=*`, this.httpOptions)
       .pipe(
         tap(res => console.log('Proyectos:', res)),
         catchError(() =>
@@ -75,7 +81,7 @@ export class StrapiService {
 
   getServicios(): Observable<StrapiResponse<StrapiServicio>> {
     return this.http
-      .get<StrapiResponse<StrapiServicio>>(`${this.base}/api/servicios?populate=*`)
+      .get<StrapiResponse<StrapiServicio>>(`${this.base}/api/servicios?populate=*`, this.httpOptions)
       .pipe(
         tap(res => console.log('Servicios:', res)),
         catchError(() =>
@@ -90,14 +96,14 @@ export class StrapiService {
       nombre:              item.nombre,
       especialidad:        item.especialidad,
       descripcionBreve:    item.descripcionBreve,
-          descripcionCompleta: Array.isArray(item.descripcionCompleta)
-      ? item.descripcionCompleta
-          .map((block: any) => block.children?.map((c: any) => c.text).join('') ?? '')
-          .join('\n')
-      : item.descripcionCompleta ?? '',
-          fotoPerfil: Array.isArray(item.fotoPerfil)
-      ? (item.fotoPerfil[0]?.url ? `${this.base}${item.fotoPerfil[0].url}` : '')
-      : (item.fotoPerfil?.url ? `${this.base}${item.fotoPerfil.url}` : ''),
+      descripcionCompleta: Array.isArray(item.descripcionCompleta)
+        ? item.descripcionCompleta
+            .map((block: any) => block.children?.map((c: any) => c.text).join('') ?? '')
+            .join('\n')
+        : item.descripcionCompleta ?? '',
+      fotoPerfil: Array.isArray(item.fotoPerfil)
+        ? (item.fotoPerfil[0]?.url ? `${this.base}${item.fotoPerfil[0].url}` : '')
+        : (item.fotoPerfil?.url ? `${this.base}${item.fotoPerfil.url}` : ''),
       correo:              item.correo,
       github:              item.github,
       linkedin:            item.linkedin,
@@ -114,9 +120,9 @@ export class StrapiService {
       slug:                item.slug,
       descripcionBreve:    item.descripcionBreve,
       descripcionCompleta: item.descripcionCompleta,
-          imagen: Array.isArray(item.imagen)
-      ? (item.imagen[0]?.url ? `${this.base}${item.imagen[0].url}` : '')
-      : (item.imagen?.url ? `${this.base}${item.imagen.url}` : ''),
+      imagen: Array.isArray(item.imagen)
+        ? (item.imagen[0]?.url ? `${this.base}${item.imagen[0].url}` : '')
+        : (item.imagen?.url ? `${this.base}${item.imagen.url}` : ''),
       tipo:                item.tipo,
       tecnologias:         item.tecnologias ?? [],
       repositorio:         item.repositorio ?? '',
@@ -125,12 +131,13 @@ export class StrapiService {
       programadores:       item.programadors?.map(p => p.id) ?? [],
     };
   }
+  
   mapServicio(item: StrapiServicio): Servicio {
-  return {
-    id:          item.id,
-    nombre:      item.nombre,
-    descripcion: item.descripcion,
-    icono:       item.icono,
-  };
-}
+    return {
+      id:          item.id,
+      nombre:      item.nombre,
+      descripcion: item.descripcion,
+      icono:       item.icono,
+    };
+  }
 }
