@@ -31,7 +31,9 @@ export class PerfilPage {
       map(res => res.data.map(p => this.strapiService.mapProyecto(p)))
     ),
   });
-
+isLoading = computed(() => 
+    this.programadoresResource.isLoading() || this.proyectosResource.isLoading()
+  );
   programador = computed(() =>
     (this.programadoresResource.value() ?? []).find(p => p.slug === this.slug())
   );
@@ -41,19 +43,20 @@ export class PerfilPage {
       p.programadores.includes(this.programador()?.id ?? -1)
     )
   );
-
-  getIcono(tech: string): string {
+getIcono(tech: string): string {
     const iconos: Record<string, string> = {
       'Angular':     'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/angularjs/angularjs-original.svg',
       'TypeScript':  'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/typescript/typescript-original.svg',
       'Tailwind':    'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/tailwindcss/tailwindcss-plain.svg',
       'Firebase':    'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/firebase/firebase-plain.svg',
-      'Strapi':      'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/strapi/strapi-original.svg',
+      'Strapi':      'https://cdn.simpleicons.org/strapi/4945FF', // <-- Usando Simple Icons con el color morado oficial
       'Spring Boot': 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/spring/spring-original.svg',
       'Java':        'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/java/java-original.svg',
       'PostgreSQL':  'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/postgresql/postgresql-original.svg',
       'Docker':      'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/docker/docker-original.svg',
       'Node':        'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/nodejs/nodejs-original.svg',
+      'Laravel':     'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/laravel/laravel-original.svg',
+      'Postman':     'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/postman/postman-original.svg',
     };
     return iconos[tech] ?? '';
   }

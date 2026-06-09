@@ -14,20 +14,20 @@ import { guestGuard } from './core/guards/guest.guard';
 import { adminGuard } from './core/guards/admin.guard';
 
 export const routes: Routes = [
-    { path: '', component: HomePage },
-    { path: 'perfil/:slug', component: PerfilPage },
+    { path: '', component: HomePage ,title: 'Inicio - DuoDev'},
+    { path: 'perfil/:slug', component: PerfilPage ,title: 'Perfil - DuoDev'},
     
     // Rutas protegidas para que no entre si ya está logueado
-    { path: 'login', component: LoginPage, canActivate: [guestGuard] },
-    { path: 'register', component: RegisterPage, canActivate: [guestGuard] },
+    { path: 'login', component: LoginPage, canActivate: [guestGuard], title: 'Iniciar sesión - DuoDev' },
+    { path: 'register', component: RegisterPage, canActivate: [guestGuard], title: 'Registrarse - DuoDev' },
     
     // El cliente debe estar logueado para enviar una solicitud
-    { path: 'solicitudes/nueva', component: NuevaSolicitudPage, canActivate: [authGuard] },
-    { path: 'solicitudes/mis', component: ListaSolicitudesPage, canActivate: [authGuard] },
+    { path: 'solicitudes/nueva', component: NuevaSolicitudPage, canActivate: [authGuard], title: 'Nueva solicitud - DuoDev' },
+    { path: 'solicitudes/mis', component: ListaSolicitudesPage, canActivate: [authGuard], title: 'Mis solicitudes - DuoDev' },
     
-    // Solo ustedes (programadores) entran al panel
-    { path: 'panel', component: PanelPage, canActivate: [adminGuard] },
+    // Solo programadores
+    { path: 'panel', component: PanelPage, canActivate: [adminGuard], title: 'Panel - DuoDev' },
     
-    { path: 'proyectos', component: ProyectosPage },
+    { path: 'proyectos', component: ProyectosPage, title: 'Proyectos - DuoDev' },
     { path: '**', redirectTo: '' }
 ];

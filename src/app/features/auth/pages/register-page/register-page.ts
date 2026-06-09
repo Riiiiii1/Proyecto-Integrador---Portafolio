@@ -1,8 +1,9 @@
-import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core'; // <-- Añadir signal
+import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
 import { passwordMatchValidator } from '../../validators/password-match.validator';
 import { emailUniqueValidator } from '../../validators/email-unique.validator';
+import { Auth } from '../../../../core/services/auth/auth';
 
 @Component({
   selector: 'app-register-page',
@@ -14,8 +15,8 @@ export class RegisterPage {
   
   private fb = inject(FormBuilder);
   private router = inject(Router);
+  private auth = inject(Auth); 
 
-  // Variables de estado para los botones del ojito
   showPassword = signal(false);
   showConfirmPassword = signal(false);
 
@@ -29,7 +30,6 @@ export class RegisterPage {
   get password() { return this.form.get('password')!; }
   get confirmPassword() { return this.form.get('confirmPassword')!; }
 
-  // Funciones para alternar la vista
   togglePassword() {
     this.showPassword.set(!this.showPassword());
   }
@@ -43,7 +43,14 @@ export class RegisterPage {
       this.form.markAllAsTouched();
       return;
     }
-    console.log('Datos del formulario:', this.form.value);
-    this.router.navigate(['/']);
+    const { email, password } = this.form.value;
+    this.auth.registerWithEmail(email!, password!)
+      .then((userCredential) => {
+        console.log('Cuenta creada exitosamente para:', userCredential.user.email);
+        this.router.navigate(['/']);
+      })
+      .catch((error) => {
+        console.error('Error al crear la cuenta en Firebase:', error.code);
+      });
   }
 }

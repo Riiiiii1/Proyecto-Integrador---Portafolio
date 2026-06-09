@@ -3,12 +3,12 @@ import { provideRouter, withInMemoryScrolling } from '@angular/router';
 import { provideHttpClient , withFetch} from '@angular/common/http';
 import { routes } from './app.routes';
 
-// Importaciones de Firebase añadidas
+
 import { initializeApp, provideFirebaseApp } from '@angular/fire/app';
 import { getAuth, provideAuth } from '@angular/fire/auth';
 import { getFirestore, provideFirestore } from '@angular/fire/firestore';
 
-// Las llaves de tu proyecto en Firebase
+
 const firebaseConfig = {
   apiKey: "AIzaSyAhe-mym98AhgdnQXQnQSJdmjdQmgYbVCk",
   authDomain: "david-sisa-portafolio.firebaseapp.com",
@@ -26,8 +26,6 @@ export const appConfig: ApplicationConfig = {
       scrollPositionRestoration: 'top'
     })),
     provideHttpClient(withFetch()),
-    
-    // Proveedores de Firebase añadidos sin borrar los tuyos
     provideFirebaseApp(() => initializeApp(firebaseConfig)),
     provideAuth(() => getAuth()),
     provideFirestore(() => getFirestore()),

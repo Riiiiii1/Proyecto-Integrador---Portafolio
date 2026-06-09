@@ -7,10 +7,10 @@ import { Auth } from '../../../../core/services/auth/auth';
 import { Hero } from '../../components/hero/hero';
 import { CardProgramador } from '../../../../shared/components/card-programador/card-programador';
 import { CardProyecto } from '../../../../shared/components/card-proyecto/card-proyecto';
-
+import { LucideAngularModule } from 'lucide-angular';
 @Component({
   selector: 'app-home-page',
-  imports: [Hero, CardProgramador, CardProyecto, RouterLink],
+  imports: [Hero, CardProgramador, CardProyecto, RouterLink, LucideAngularModule],
   templateUrl: './home-page.html',
 })
 export class HomePage {

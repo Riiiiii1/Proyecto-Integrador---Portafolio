@@ -13,8 +13,6 @@ export interface Proyecto {
   programadores: number[];   
 }
 
-
-// al final de proyecto.ts
 export interface Servicio {
   id: number;
   nombre: string;

@@ -15,9 +15,7 @@ export class LoginPage {
   
   private fb = inject(FormBuilder);
   private router = inject(Router);
-  private auth = inject(Auth); // Inyectamos tu clase de autenticación
-
-  // Variable de estado para mostrar/ocultar contraseña
+  private auth = inject(Auth);
   showPassword = signal(false);
 
   form = this.fb.group({
@@ -27,41 +25,36 @@ export class LoginPage {
 
   get email() { return this.form.get('email')!; }
   get password() { return this.form.get('password')!; }
-
-  // Función para alternar la vista
+  
   togglePassword() {
     this.showPassword.set(!this.showPassword());
   }
-onSubmit() {
-  if (this.form.invalid) {
-    this.form.markAllAsTouched();
-    return;
+  onSubmit() {
+    if (this.form.invalid) {
+      this.form.markAllAsTouched();
+      return;
+    }
+
+    const { email, password } = this.form.value;
+
+    this.auth.loginWithEmail(email!, password!)
+      .then(() => {
+        if (this.auth.isProgramador()) {
+          this.router.navigate(['/panel']);
+        } else {
+          this.router.navigate(['/']);
+        }
+      })
+      .catch((error) => {
+        console.error('Error al iniciar sesión:', error.code);
+      });
   }
 
-  const { email, password } = this.form.value;
 
-  this.auth.loginWithEmail(email!, password!)
-    .then(() => {
-      if (this.auth.isProgramador()) {
-        this.router.navigate(['/panel']);
-      } else {
-        this.router.navigate(['/']);
-      }
-    })
-    .catch((error) => {
-      console.error('Error al iniciar sesión:', error.code);
-    });
-}
-
-  /**
-   * Dispara el flujo de inicio de sesión con Google.
-   * Si es exitoso, redirige temporalmente al Home o al Panel según corresponda.
-   */
   ingresarConGoogle() {
     this.auth.loginWithGoogle()
       .then((resultado) => {
         console.log('Usuario conectado vía Google:', resultado.user.displayName);
-        // Redirigimos al inicio una vez autenticado correctamente
         this.router.navigate(['/']);
       })
       .catch((error) => {

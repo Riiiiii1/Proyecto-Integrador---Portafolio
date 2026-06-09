@@ -2,7 +2,14 @@
 
   <div class="w-full max-w-5xl">
 
-    @if (programador()) {
+@if (isLoading()) { 
+      <div class="flex items-center justify-center min-h-[50vh]">
+        <p class="text-cyan-400 font-mono tracking-widest text-xl animate-pulse">
+          Cargando ......
+        </p>
+      </div>
+    }
+    @else if (programador()) {
 
       <section class="flex flex-col md:flex-row items-start gap-10 mb-20 border-b border-white/5 pb-20">
 
@@ -91,7 +98,8 @@
         }
       </section>
 
-    } @else {
+    } 
+    @else {
       <div class="flex items-center justify-center min-h-[50vh]">
         <p class="text-white/30 font-mono tracking-widest uppercase">Programador no encontrado.</p>
       </div>

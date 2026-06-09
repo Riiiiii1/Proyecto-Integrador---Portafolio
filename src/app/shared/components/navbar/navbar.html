@@ -15,7 +15,13 @@
          Proyectos
       </a>
     </li>
-
+    @if (!auth.isLoggedIn()) {
+      <li>
+        <a routerLink="/login" routerLinkActive="active-link" class="nav-link text-white/70 hover:text-cyan-400 transition-colors text-cyan-300 font-bold">
+           Login
+        </a>
+      </li>
+    }
     @if (auth.isLoggedIn() && !auth.isProgramador()) {
       <li>
         <a routerLink="/solicitudes/nueva" routerLinkActive="active-link" class="nav-link text-white/70 hover:text-cyan-400 transition-colors">
