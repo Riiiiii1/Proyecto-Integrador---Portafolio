@@ -2,7 +2,7 @@
 
   <div class="w-full max-w-5xl">
 
-@if (isLoading()) { 
+    @if (isLoading()) { 
       <div class="flex items-center justify-center min-h-[50vh]">
         <p class="text-cyan-400 font-mono tracking-widest text-xl animate-pulse">
           Cargando ......
@@ -13,7 +13,7 @@
 
       <section class="flex flex-col md:flex-row items-start gap-10 mb-20 border-b border-white/5 pb-20">
 
-        <img [src]="programador()!.fotoPerfil"
+        <img [src]="fotoPerfilSegura()"
              [alt]="programador()!.nombre"
              class="w-36 h-36 rounded-full object-cover border-2 border-cyan-500/40 shadow-[0_0_20px_rgba(34,211,238,0.1)]"/>
 

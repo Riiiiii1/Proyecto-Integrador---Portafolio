@@ -1,9 +1,8 @@
 <div class="border border-white/10 bg-white/5 rounded-xl overflow-hidden hover:border-cyan-500/40 transition-all group">
 
-
   <div class="relative overflow-hidden h-48">
     <img 
-      [src]="proyecto().imagen" 
+      [src]="imagenProyectoSegura()" 
       [alt]="proyecto().nombre"
       class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"/>
     
@@ -25,7 +24,7 @@
         @for (dev of getProgramadores(); track dev.id) {
         @if (dev.id === id) {
             <div class="flex items-center gap-2">
-            <img [src]="dev.fotoPerfil" [alt]="dev.nombre"
+            <img [src]="imagenesDevsSeguras()[dev.id]" [alt]="dev.nombre"
                 class="w-6 h-6 rounded-full object-cover border border-cyan-500/30"/>
             <span class="text-white/40 text-xs font-mono">{{ dev.nombre }}</span>
             </div>

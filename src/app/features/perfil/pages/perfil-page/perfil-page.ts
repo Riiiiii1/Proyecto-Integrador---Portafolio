@@ -1,7 +1,9 @@
-import { Component, inject, signal, computed } from '@angular/core';
+import { Component, inject, signal, computed, effect } from '@angular/core';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { rxResource } from '@angular/core/rxjs-interop';
 import { map } from 'rxjs';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
 import { StrapiService } from '../../../../core/services/strapi/strapi';
 import { CardProyecto } from '../../../../shared/components/card-proyecto/card-proyecto';
 
@@ -13,11 +15,28 @@ import { CardProyecto } from '../../../../shared/components/card-proyecto/card-p
 export class PerfilPage {
   private route = inject(ActivatedRoute);
   private strapiService = inject(StrapiService);
+  private http = inject(HttpClient);
+  private sanitizer = inject(DomSanitizer);
 
   slug = signal<string>(this.route.snapshot.params['slug']);
+  fotoPerfilSegura = signal<SafeUrl | null>(null);
 
   constructor() {
     this.route.params.subscribe(params => this.slug.set(params['slug']));
+
+    effect(() => {
+      const prog = this.programador();
+      if (prog?.fotoPerfil) {
+        const headers = new HttpHeaders({ 'ngrok-skip-browser-warning': 'true' });
+        this.http.get(prog.fotoPerfil, { headers, responseType: 'blob' }).subscribe({
+          next: (blob) => {
+            const objectUrl = URL.createObjectURL(blob);
+            this.fotoPerfilSegura.set(this.sanitizer.bypassSecurityTrustUrl(objectUrl));
+          },
+          error: () => this.fotoPerfilSegura.set(null)
+        });
+      }
+    });
   }
 
   programadoresResource = rxResource({
@@ -31,9 +50,11 @@ export class PerfilPage {
       map(res => res.data.map(p => this.strapiService.mapProyecto(p)))
     ),
   });
-isLoading = computed(() => 
+
+  isLoading = computed(() => 
     this.programadoresResource.isLoading() || this.proyectosResource.isLoading()
   );
+
   programador = computed(() =>
     (this.programadoresResource.value() ?? []).find(p => p.slug === this.slug())
   );
@@ -43,13 +64,14 @@ isLoading = computed(() =>
       p.programadores.includes(this.programador()?.id ?? -1)
     )
   );
-getIcono(tech: string): string {
+
+  getIcono(tech: string): string {
     const iconos: Record<string, string> = {
       'Angular':     'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/angularjs/angularjs-original.svg',
       'TypeScript':  'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/typescript/typescript-original.svg',
       'Tailwind':    'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/tailwindcss/tailwindcss-plain.svg',
       'Firebase':    'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/firebase/firebase-plain.svg',
-      'Strapi':      'https://cdn.simpleicons.org/strapi/4945FF', // <-- Usando Simple Icons con el color morado oficial
+      'Strapi':      'https://cdn.simpleicons.org/strapi/4945FF',
       'Spring Boot': 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/spring/spring-original.svg',
       'Java':        'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/java/java-original.svg',
       'PostgreSQL':  'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/postgresql/postgresql-original.svg',
