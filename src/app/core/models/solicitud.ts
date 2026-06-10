@@ -9,4 +9,7 @@ export interface Solicitud {
   estado: 'pendiente' | 'respondida';
   observacion: string;
   creadoEn: Date;
+  
+  // Añadimos tu propiedad para que el Navbar pueda controlar las burbujas de notificaciones
+  leido?: boolean;              
 }
