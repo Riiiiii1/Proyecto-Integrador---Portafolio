@@ -102,8 +102,12 @@ export class StrapiService {
             .join('\n')
         : item.descripcionCompleta ?? '',
       fotoPerfil: Array.isArray(item.fotoPerfil)
-        ? (item.fotoPerfil[0]?.url ? `${this.base}${item.fotoPerfil[0].url}` : '')
-        : (item.fotoPerfil?.url ? `${this.base}${item.fotoPerfil.url}` : ''),
+        ? (item.fotoPerfil[0]?.url 
+            ? this.resolverUrl(item.fotoPerfil[0].url) 
+            : '')
+        : (item.fotoPerfil?.url 
+            ? this.resolverUrl(item.fotoPerfil.url) 
+            : ''),
       correo:              item.correo,
       github:              item.github,
       linkedin:            item.linkedin,
@@ -113,24 +117,28 @@ export class StrapiService {
     };
   }
 
-  mapProyecto(item: StrapiProyecto): Proyecto {
-    return {
-      id:                  item.id,
-      nombre:              item.nombre,
-      slug:                item.slug,
-      descripcionBreve:    item.descripcionBreve,
-      descripcionCompleta: item.descripcionCompleta,
-      imagen: Array.isArray(item.imagen)
-        ? (item.imagen[0]?.url ? `${this.base}${item.imagen[0].url}` : '')
-        : (item.imagen?.url ? `${this.base}${item.imagen.url}` : ''),
-      tipo:                item.tipo,
-      tecnologias:         item.tecnologias ?? [],
-      repositorio:         item.repositorio ?? '',
-      demo:                item.demo ?? '',
-      destacado:           item.destacado ?? false,
-      programadores:       item.programadors?.map(p => p.id) ?? [],
-    };
-  }
+mapProyecto(item: StrapiProyecto): Proyecto {
+  return {
+    id:                  item.id,
+    nombre:              item.nombre,
+    slug:                item.slug,
+    descripcionBreve:    item.descripcionBreve,
+    descripcionCompleta: Array.isArray(item.descripcionCompleta)
+      ? item.descripcionCompleta
+          .map((block: any) => block.children?.map((c: any) => c.text).join('') ?? '')
+          .join('\n')
+      : item.descripcionCompleta ?? '',
+    imagen: Array.isArray(item.imagen)
+      ? this.resolverUrl(item.imagen[0]?.url ?? '')
+      : this.resolverUrl(item.imagen?.url ?? ''),
+    tipo:                item.tipo,
+    tecnologias:         item.tecnologias ?? [],
+    repositorio:         item.repositorio ?? '',
+    demo:                item.demo ?? '',
+    destacado:           item.destacado ?? false,
+    programadores:       item.programadors?.map(p => p.id) ?? [],
+  };
+}
   
   mapServicio(item: StrapiServicio): Servicio {
     return {
@@ -140,4 +148,12 @@ export class StrapiService {
       icono:       item.icono,
     };
   }
+
+  private resolverUrl(url: string): string {
+  if (!url) return '';
+  // Si ya es una URL completa, la devuelve tal cual
+  if (url.startsWith('http://') || url.startsWith('https://')) return url;
+  // Si es relativa, le agrega la base
+  return `${this.base}${url}`;
+}
 }

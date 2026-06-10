@@ -12,10 +12,8 @@
     @else if (programador()) {
 
       <section class="flex flex-col md:flex-row items-start gap-10 mb-20 border-b border-white/5 pb-20">
+<img [src]="programador()?.fotoPerfil" [alt]="programador()?.nombre" class="w-36 h-36 rounded-full object-cover border-2 border-cyan-500/40 shadow-[0_0_20px_rgba(34,211,238,0.1)]" />
 
-        <img [src]="fotoPerfilSegura()"
-             [alt]="programador()!.nombre"
-             class="w-36 h-36 rounded-full object-cover border-2 border-cyan-500/40 shadow-[0_0_20px_rgba(34,211,238,0.1)]"/>
 
         <div class="flex flex-col gap-4 flex-1">
 
@@ -61,9 +59,9 @@
 
       <section class="mb-20">
         <p class="text-cyan-400 text-xs font-mono tracking-widest uppercase mb-4">
-          Tech Stack
+        Nuestro Stack
         </p>
-        <h2 class="text-3xl font-black text-white mb-10">Tecnologías.</h2>
+        <h2 class="text-3xl font-black text-white mb-10">Tecnologías</h2>
 
         <div class="flex flex-wrap gap-4">
           @for (tech of programador()!.stack; track tech) {
@@ -79,9 +77,9 @@
 
       <section>
         <p class="text-cyan-400 text-xs font-mono tracking-widest uppercase mb-4">
-          Work
+        Trabajos
         </p>
-        <h2 class="text-3xl font-black text-white mb-10">Proyectos.</h2>
+        <h2 class="text-3xl font-black text-white mb-10">Proyectos</h2>
 
         @if (proyectos().length === 0) {
           <div class="p-8 border border-white/5 bg-white/5 rounded-xl text-center">

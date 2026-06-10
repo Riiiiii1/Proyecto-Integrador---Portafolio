@@ -1,9 +1,7 @@
-import { Component, inject, signal, computed, effect } from '@angular/core';
+import { Component, inject, signal, computed } from '@angular/core';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { rxResource } from '@angular/core/rxjs-interop';
 import { map } from 'rxjs';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
 import { StrapiService } from '../../../../core/services/strapi/strapi';
 import { CardProyecto } from '../../../../shared/components/card-proyecto/card-proyecto';
 
@@ -15,28 +13,11 @@ import { CardProyecto } from '../../../../shared/components/card-proyecto/card-p
 export class PerfilPage {
   private route = inject(ActivatedRoute);
   private strapiService = inject(StrapiService);
-  private http = inject(HttpClient);
-  private sanitizer = inject(DomSanitizer);
 
   slug = signal<string>(this.route.snapshot.params['slug']);
-  fotoPerfilSegura = signal<SafeUrl | null>(null);
 
   constructor() {
     this.route.params.subscribe(params => this.slug.set(params['slug']));
-
-    effect(() => {
-      const prog = this.programador();
-      if (prog?.fotoPerfil) {
-        const headers = new HttpHeaders({ 'ngrok-skip-browser-warning': 'true' });
-        this.http.get(prog.fotoPerfil, { headers, responseType: 'blob' }).subscribe({
-          next: (blob) => {
-            const objectUrl = URL.createObjectURL(blob);
-            this.fotoPerfilSegura.set(this.sanitizer.bypassSecurityTrustUrl(objectUrl));
-          },
-          error: () => this.fotoPerfilSegura.set(null)
-        });
-      }
-    });
   }
 
   programadoresResource = rxResource({
@@ -51,7 +32,7 @@ export class PerfilPage {
     ),
   });
 
-  isLoading = computed(() => 
+  isLoading = computed(() =>
     this.programadoresResource.isLoading() || this.proyectosResource.isLoading()
   );
 

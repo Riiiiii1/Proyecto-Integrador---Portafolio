@@ -1,12 +1,10 @@
 <div class="border border-white/10 bg-white/5 rounded-xl overflow-hidden hover:border-cyan-500/40 transition-all group">
 
   <div class="relative overflow-hidden h-48">
-    <img 
-      [src]="imagenProyectoSegura()" 
-      [alt]="proyecto().nombre"
-      class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"/>
-    
-
+<img 
+  [src]="proyecto().imagen" 
+  [alt]="proyecto().nombre"
+  class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"/>
     <span class="absolute top-3 right-3 text-xs font-mono px-2 py-1 rounded"
       style="background:rgba(34,211,238,0.15);color:#22d3ee;border:1px solid rgba(34,211,238,0.3)">
       {{ proyecto().tipo }}
@@ -20,17 +18,13 @@
     <p class="text-white/50 text-sm leading-relaxed">{{ proyecto().descripcionBreve }}</p>
     
     <div class="flex items-center gap-2 flex-wrap">
-    @for (id of proyecto().programadores; track id) {
-        @for (dev of getProgramadores(); track dev.id) {
-        @if (dev.id === id) {
-            <div class="flex items-center gap-2">
-            <img [src]="imagenesDevsSeguras()[dev.id]" [alt]="dev.nombre"
-                class="w-6 h-6 rounded-full object-cover border border-cyan-500/30"/>
-            <span class="text-white/40 text-xs font-mono">{{ dev.nombre }}</span>
-            </div>
-        }
-        }
-    }
+ @for (dev of getProgramadoresDelProyecto(); track dev.id) {
+  <div class="flex items-center gap-2">
+    <img [src]="dev.fotoPerfil" [alt]="dev.nombre"
+      class="w-6 h-6 rounded-full object-cover border border-cyan-500/30"/>
+    <span class="text-white/40 text-xs font-mono">{{ dev.nombre }}</span>
+  </div>
+}
     </div>
 
     <div class="flex flex-wrap gap-2">
