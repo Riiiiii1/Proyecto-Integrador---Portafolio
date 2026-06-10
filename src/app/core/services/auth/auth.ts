@@ -49,3 +49,5 @@ export class Auth {
     return createUserWithEmailAndPassword(this.firebaseAuth, email, password);
   }
 }
+
+

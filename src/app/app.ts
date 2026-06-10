@@ -1,8 +1,9 @@
-import { Component, signal } from '@angular/core';
+import { signal } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import { Navbar } from './shared/components/navbar/navbar';
 import { Footer } from "./shared/components/footer/footer";
-
+import { Component, inject, OnInit } from '@angular/core';
+import { Auth } from './core/services/auth/auth';
 @Component({
   selector: 'app-root',
   imports: [RouterOutlet, Navbar, Footer],

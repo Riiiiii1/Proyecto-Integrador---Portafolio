@@ -50,7 +50,7 @@ export class LoginPage {
       });
   }
 
-
+errorGoogle = signal<string | null>(null);
   ingresarConGoogle() {
     this.auth.loginWithGoogle()
       .then((resultado) => {
@@ -58,6 +58,7 @@ export class LoginPage {
         this.router.navigate(['/']);
       })
       .catch((error) => {
+        this.errorGoogle.set(error.code + ': ' + error.message);
         console.error('Error durante la autenticación con Google:', error);
       });
   }
