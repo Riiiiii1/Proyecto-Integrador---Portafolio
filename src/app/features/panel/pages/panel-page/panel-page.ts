@@ -1,12 +1,13 @@
 import { Component, inject, signal, computed, resource } from '@angular/core';
 import { DatePipe } from '@angular/common';
-import { rxResource } from '@angular/core/rxjs-interop';
-import { from } from 'rxjs';
+
 import { Auth } from '../../../../core/services/auth/auth';
 import { Firestore } from '../../../../core/services/firestore/firestore';
 import { Solicitud } from '../../../../core/models/solicitud';
 import { StrapiService } from '../../../../core/services/strapi/strapi';
-import { map } from 'rxjs';
+import { rxResource } from '@angular/core/rxjs-interop';
+import { from, of } from 'rxjs';
+import { map, switchMap } from 'rxjs/operators';
 @Component({
   selector: 'app-panel-page',
   imports: [DatePipe],
@@ -22,21 +23,29 @@ export class PanelPage {
   respuesta    = signal('');
   guardando    = signal(false);
 
-solicitudesResource = resource({
-  params: () => this.auth.currentUser()?.email,
-  loader: async ({ params: email }) => {
-    if (!email) return [];
-    
-    // Busca el slug del programador logueado en Strapi
-    const res = await this.strapiService.getProgramadores().pipe(
-      map(r => r.data.map(p => this.strapiService.mapProgramador(p)))
-    ).toPromise();
-    
-    const yo = res?.find(p => p.correo === email);
-    if (!yo) return [];
-    
-    return this.firestore.getSolicitudesDeProgramador(yo.slug);
-  }
+solicitudesResource = rxResource({
+stream: () => {
+  const email = this.auth.currentUser()?.email;
+  console.log('📧 Email logueado:', email);
+  if (!email) return of([]);
+
+  return this.strapiService.getProgramadores().pipe(
+    map(r => r.data.map(p => this.strapiService.mapProgramador(p))),
+    map(programadores => {
+      console.log('👥 Programadores de Strapi:', programadores);
+      console.log('🔍 Slugs disponibles:', programadores.map(p => p.slug));
+      console.log('📩 Correos disponibles:', programadores.map(p => p.correo));
+      const yo = programadores.find(p => p.correo === email);
+      console.log('🙋 Yo encontrado:', yo);
+      return yo;
+    }),
+    switchMap(yo => {
+      if (!yo) return of([]);
+      console.log('🔎 Buscando solicitudes con slug:', yo.slug);
+      return from(this.firestore.getSolicitudesDeProgramador(yo.slug));
+    })
+  );
+}
 });
 
   solicitudesFiltradas = computed(() => {
